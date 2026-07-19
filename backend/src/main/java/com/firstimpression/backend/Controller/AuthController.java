@@ -31,14 +31,10 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req){
-		try {
+	
 			AuthResponse response = authService.register(req);
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-		}catch(RuntimeException e){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
-		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message","Something went wrong"));
-		}
+		
 	}
 	
 

@@ -2,6 +2,7 @@ package com.firstimpression.backend.Services;
 
 import org.springframework.stereotype.Service;
 
+import com.firstimpression.backend.Exception.ResourceExistsException;
 import com.firstimpression.backend.Repository.UsersRepository;
 import com.firstimpression.backend.dto.AuthResponse;
 import com.firstimpression.backend.dto.RegisterRequest;
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-
+ 
     private final UsersRepository usersRepository;
 
     public AuthResponse register(RegisterRequest request) {
@@ -22,7 +23,7 @@ public class AuthService {
         log.info("Inside AuthService : register() {}", request);
 
         if (usersRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new ResourceExistsException("Email already exists");
             
         }
 

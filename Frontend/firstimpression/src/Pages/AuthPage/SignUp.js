@@ -48,7 +48,7 @@ const SignUp = ({ onNavigateToLogin }) => {
         });
       } else {
         const error = await response.json();
-        setErrorMsg(error.message);
+        setErrorMsg(error.error);
       }
     } catch (error) {
        setErrorMsg("Something went wrong!");
