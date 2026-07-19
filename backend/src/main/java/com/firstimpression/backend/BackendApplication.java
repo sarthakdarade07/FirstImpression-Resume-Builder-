@@ -1,0 +1,19 @@
+package com.firstimpression.backend;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.firstimpression.backend.model.Users;
+
+@SpringBootApplication
+public class BackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BackendApplication.class, args);
+		
+		Users user = new Users();
+		 user.onCreate();
+		System.out.println("Application Started..."+user.getId());
+	}
+
+}
