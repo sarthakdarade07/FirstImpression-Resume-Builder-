@@ -1,5 +1,8 @@
 package com.firstimpression.backend.Services;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -65,15 +68,19 @@ public class AuthService {
                  .password(request.getPassword())
                  .profileImageUrl(request.getProfileImageUrl())
                  .subscriptionPlan(request.getSubscriptionPlan())
+                 .verificationToken(UUID.randomUUID().toString())
+                 .verificationExpires(LocalDateTime.now().plusHours(24))
                  .build();
     	 
     	 return newUser;
     }
     
     private void sendVerificationEmail(Users newUser) {
+    	
+    	log.info("Inside Auth Service - Sending email verification{}",newUser);
     	try {
     		String link = appBaseUrl+"/api/auth/verify-email?token="+newUser.getVerificationToken();
-    		String subject = "Verification mail for firstimpress";
+    		String subject = "Verification mail for firstimpression";
     		String html = """
     			    <div style="font-family: sans-serif; color: #333333; line-height: 1.5; text-align: center;">
     			        
@@ -97,8 +104,26 @@ public class AuthService {
     		emailService.sendHtmlEmail(newUser.getEmail(), subject, html);
     		
     	}catch(Exception e) {
-    		
+    		log.error("Error occured at the sending verification email",e.getMessage());
     		throw new RuntimeException("Faild to send verification mail"+e.getMessage());
     	}
     }
+    
+    
+    public void verifyEmail(String tkn) {
+    	log.info("Inside AuthSerice verify email():{}",tkn);
+     Users user=usersRepository.findByVerificationToken(tkn)
+    		 .orElseThrow(()-> new RuntimeException("Invalid token"));
+     
+     if(user.getVerificationExpires()!=null && user.getVerificationExpires().isBefore(LocalDateTime.now())) {
+    	 throw new RuntimeException("Verification token not valid!");
+     }
+     
+     user.setEmailVerified(true);
+     user.setVerificationToken(null);
+     user.setVerificationExpires(null);
+     
+     usersRepository.save(user);
+     }
+    
 }

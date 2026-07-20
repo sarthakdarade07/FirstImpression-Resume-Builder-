@@ -10,6 +10,7 @@ const SignUp = ({ onNavigateToLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -39,13 +40,8 @@ const SignUp = ({ onNavigateToLogin }) => {
 
       if (response.ok) {
         setShowToast(true);
-
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          subscriptionPlan: "Basic", 
-        });
+        setIsRegistered(true);
+      
       } else {
         const error = await response.json();
         setErrorMsg(error.error);
@@ -66,6 +62,28 @@ const SignUp = ({ onNavigateToLogin }) => {
           .form-scroll::-webkit-scrollbar { width: 6px; }
           .form-scroll::-webkit-scrollbar-track { background: transparent; }
           .form-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+          
+          @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+          }
+          @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.5); opacity: 0; }
+          }
+          .animate-heartbeat {
+            animation: heartbeat 1.5s infinite;
+          }
+          .animate-ripple {
+            animation: ripple 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+          }
+          .animate-ripple-delayed {
+            animation: ripple 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            animation-delay: 0.75s;
+          }
         `}
       </style>
 
@@ -113,11 +131,14 @@ const SignUp = ({ onNavigateToLogin }) => {
 
             {/* Sign Up Form */}
             <div className="max-w-[420px] w-full mx-auto flex-grow flex flex-col justify-center py-8 md:py-0">
-              <h2 className="text-3xl sm:text-[2.75rem] font-medium text-gray-900 mb-8 sm:mb-10 tracking-tight text-center md:text-left">
-                Create Account
-              </h2>
+              {!isRegistered && (
+                <h2 className="text-3xl sm:text-[2.75rem] font-medium text-gray-900 mb-8 sm:mb-10 tracking-tight text-center md:text-left">
+                  Create Account
+                </h2>
+              )}
 
-              <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
+              {!isRegistered ? (
+                <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
                 {/* Name Input */}
                 <div>
                   <input
@@ -209,12 +230,32 @@ const SignUp = ({ onNavigateToLogin }) => {
                   Create Account
                 </button>
               </form>
+              ) : (
+                <div className="w-full mx-auto flex-grow flex flex-col items-center justify-center space-y-8 animate-[slideInRight_0.6s_ease-out]">
+                  <div className="relative w-32 h-32 flex items-center justify-center mt-8">
+                    <div className="absolute inset-0 bg-red-500 rounded-full animate-ripple"></div>
+                    <div className="absolute inset-0 bg-red-500 rounded-full animate-ripple-delayed"></div>
+                    <div className="relative bg-red-500 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg animate-heartbeat z-10">
+                      <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="text-center space-y-3">
+                    <h3 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">Check your inbox</h3>
+                    <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+                      Please verify your email which has been sent to<br/>
+                      <span className="font-medium text-gray-900">{formData.email}</span>
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Only render if successMsg */}
 
               {showToast && (
                 <SuccessToast
-                  message="Account created successfully!"
+                  message="Verification email sent!"
                   onClose={() => setShowToast(false)}
                 />
               )}

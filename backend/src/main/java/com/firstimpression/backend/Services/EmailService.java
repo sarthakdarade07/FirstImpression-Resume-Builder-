@@ -21,6 +21,8 @@ public class EmailService {
 	private final JavaMailSender mailSender;
 	
 	public void sendHtmlEmail(String to , String subject , String htmlContent) throws MessagingException {
+		
+		log.info("Inside EmailSevice sendHtmlEmail():{} {} {}",to,subject,htmlContent);
 		 MimeMessage mimemessage = mailSender.createMimeMessage();
 		 MimeMessageHelper helper = new MimeMessageHelper(mimemessage,true , "UTF-8");
 		 

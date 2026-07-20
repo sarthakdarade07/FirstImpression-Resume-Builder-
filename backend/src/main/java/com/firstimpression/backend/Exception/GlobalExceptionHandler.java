@@ -10,15 +10,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String,Object>> handleValidationExceptions(MethodArgumentNotValidException excep){
+    public ResponseEntity<Map<String,Object>> handleValidationExceptions(MethodArgumentNotValidException e){
+    	
+    	log.info("Inside GlobalExceptionHandler - handleValidationExceptions():{}",e.getMessage());
+
     	
     	Map<String,String> errors = new HashMap<>();
     	
-    	excep.getBindingResult().getAllErrors().forEach(error->{
+    	e.getBindingResult().getAllErrors().forEach(error->{
     		String fieldName = ((FieldError)error).getField();
     		String errorMessage = error.getDefaultMessage();
     		
@@ -38,11 +44,15 @@ public class GlobalExceptionHandler {
     } 
     
     @ExceptionHandler(ResourceExistsException.class)
-    public ResponseEntity<Map<String,Object>> handleResourceExistsException(ResourceExistsException ex){
+    public ResponseEntity<Map<String,Object>> handleResourceExistsException(ResourceExistsException e){
+    	
+    	log.info("Inside GlobalExceptionHandler - handleResourceExistsException():{}",e.getMessage());
+
+    	
     	Map<String,Object> response = new HashMap<>();
     	
     	response.put("message", "Resource Exists");
-    	response.put("error", ex.getMessage()); 
+    	response.put("error", e.getMessage()); 
     	
     	return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     	
@@ -51,6 +61,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String,Object>> handleGenericException(Exception e){
     	
+    	log.info("Inside GlobalExceptionHandler - handleGenericException():{}",e.getMessage());
+
     	Map<String,Object> response = new HashMap<>();
     	
     	response.put("message", "Internal server error.");
