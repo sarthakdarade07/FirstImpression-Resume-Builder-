@@ -11,9 +11,8 @@ public class BackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 		
-		Users user = new Users();
-		 user.onCreate();
-		System.out.println("Application Started..."+user.getId());
+		
+		System.out.println("Application Started...");
 	}
 
 }

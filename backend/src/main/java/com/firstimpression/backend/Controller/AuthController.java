@@ -1,8 +1,9 @@
 package com.firstimpression.backend.Controller;
 
+import java.io.IOException;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.firstimpression.backend.Services.AuthService;
+import com.firstimpression.backend.Services.FileUploadService;
 import com.firstimpression.backend.dto.AuthResponse;
 import com.firstimpression.backend.dto.RegisterRequest;
 import com.firstimpression.backend.util.AppConstants;
@@ -32,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 	
 	private final AuthService authService;
+	private final FileUploadService fileUploadService;
 	
 	@PostMapping(AppConstants.REGISTER)
 	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req){
@@ -51,6 +56,16 @@ public class AuthController {
 
 		 authService.verifyEmail(token);
 		  return ResponseEntity.status(HttpStatus.OK).body(Map.of("message","Email Verified Successfully")); 
+	}
+	
+	@PostMapping(AppConstants.UPLOAD_IMAGE)
+	public ResponseEntity<?> uploadImage(@Valid @RequestPart("image")MultipartFile file) throws IOException{
+		log.info("Inside AuthController- uplaodImage():{}",file);
+
+		Map<String,String> response =fileUploadService.uploadImage(file);
+		
+		return ResponseEntity.ok(response);
+		
 	}
 	
 
