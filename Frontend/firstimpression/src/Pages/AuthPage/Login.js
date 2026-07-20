@@ -1,9 +1,48 @@
-import React from "react";
-import { User, EyeOff, LogIn, ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { User, EyeOff, Eye, LogIn, ChevronDown } from "lucide-react";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
+import SuccessToast from "../../Components/SuccessToast";
+import FailedToast from "../../Components/FailedToast";
 
 const Login = ({ onNavigateToSignUp }) => {
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
+    const [msg, setMsg] = useState("");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // We'll send both depending on backend requirements, usually one field or separate
+        body: JSON.stringify({ email: emailOrUsername, password }),
+      });
+
+      if (!response.ok) {
+        setError("Invalid credentials");
+      }else{
+      const data = await response.json();
+      setMsg(data.message);
+      setShowToast(true);
+      }
+      // Handle success (e.g., redirect or save token)
+    } catch (err) {
+      setError(err.message || "An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-0 sm:p-6 lg:p-8 font-sans">
       <style>
@@ -41,12 +80,12 @@ const Login = ({ onNavigateToSignUp }) => {
               {/* Logo */}
               <div className="flex items-center  cursor-pointer">
                 {/* Gradient Circle Logo */}
-                <div
-                  className="w-5 h-5 sm:w-8 sm:h-8 rounded-full border-[3px] sm:border-[3.5px] border-transparent shrink-0"
-                  >
-                    <img src={icon_logo} 
-                    className="h-full w-full justify-center "/>
-                  </div>
+                <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-full border-[3px] sm:border-[3.5px] border-transparent shrink-0">
+                  <img
+                    src={icon_logo}
+                    className="h-full w-full justify-center "
+                  />
+                </div>
                 <span className="text-xl sm:text-[1.35rem] font-bold tracking-tight text-gray-900">
                   firstimpression
                 </span>
@@ -67,33 +106,47 @@ const Login = ({ onNavigateToSignUp }) => {
                 Sign In
               </h2>
 
-              <form
-                className="space-y-4 sm:space-y-5"
-                onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-4 sm:space-y-5" onSubmit={handleLogin}>
+              
                 {/* Email / Username Input */}
                 <div>
                   <input
                     type="text"
                     placeholder="Email or Username"
+                    value={emailOrUsername}
+                    onChange={(e) => setEmailOrUsername(e.target.value)}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-[#FF5A00] focus:ring-1 focus:ring-[#FF5A00] transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
+                    required
                   />
                 </div>
 
                 {/* Password Input */}
                 <div className="relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-[#FF5A00] focus:ring-1 focus:ring-[#FF5A00] transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
+                    required
                   />
                   <button
                     type="button"
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                    <EyeOff
-                      size={20}
-                      strokeWidth={1.5}
-                      className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
-                    />
+                    {showPassword ? (
+                      <Eye
+                        size={20}
+                        strokeWidth={1.5}
+                        className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
+                      />
+                    ) : (
+                      <EyeOff
+                        size={20}
+                        strokeWidth={1.5}
+                        className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
+                      />
+                    )}
                   </button>
                 </div>
 
@@ -109,10 +162,26 @@ const Login = ({ onNavigateToSignUp }) => {
                 {/* Sign In Button */}
                 <button
                   type="submit"
-                  className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-[#FF4E00] to-[#E92B65] hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px]">
+                  disabled={isLoading}
+                  className={`w-full mt-4 sm:mt-6 bg-gradient-to-r from-[#FF4E00] to-[#E92B65] hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
                   <LogIn size={18} strokeWidth={2} />
-                  Sign In
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </button>
+
+                {showToast && (
+                  <SuccessToast
+                    message={msg}
+                    onClose={() => setShowToast(false)}
+                  />
+                )}
+
+                {/*  if errorMsg */}
+                {error && (
+                  <FailedToast
+                    message={error}
+                    onClose={() => setError("")}
+                  />
+                )}
               </form>
             </div>
 

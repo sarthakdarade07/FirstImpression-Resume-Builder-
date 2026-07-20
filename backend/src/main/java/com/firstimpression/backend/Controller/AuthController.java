@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.firstimpression.backend.Services.AuthService;
 import com.firstimpression.backend.Services.FileUploadService;
 import com.firstimpression.backend.dto.AuthResponse;
+import com.firstimpression.backend.dto.LoginRequest;
 import com.firstimpression.backend.dto.RegisterRequest;
 import com.firstimpression.backend.util.AppConstants;
 
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping(AppConstants.AUTH_CONTROLLER)
 
-@CrossOrigin(origins = "http://localhost:3000/")
+
 public class AuthController {
 	
 	private final AuthService authService;
@@ -65,6 +66,16 @@ public class AuthController {
 		Map<String,String> response =fileUploadService.uploadImage(file);
 		
 		return ResponseEntity.ok(response);
+		
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req){
+		
+		AuthResponse response =authService.login(req);
+		
+		return ResponseEntity.ok(Map.of("message","Login Successfull!","response",response));
+		
 		
 	}
 	

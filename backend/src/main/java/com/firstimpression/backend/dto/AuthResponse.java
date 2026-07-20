@@ -25,6 +25,8 @@ public class AuthResponse {
     private LocalDateTime verificationExpires;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String JwtToken;
+
 	
 	
 }

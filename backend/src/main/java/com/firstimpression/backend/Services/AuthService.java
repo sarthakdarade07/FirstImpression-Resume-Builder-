@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.firstimpression.backend.Exception.ResourceExistsException;
 import com.firstimpression.backend.Repository.UsersRepository;
 import com.firstimpression.backend.dto.AuthResponse;
+import com.firstimpression.backend.dto.LoginRequest;
 import com.firstimpression.backend.dto.RegisterRequest;
 import com.firstimpression.backend.model.Users;
 
@@ -24,6 +27,7 @@ public class AuthService {
 	private String appBaseUrl;
     private final UsersRepository usersRepository;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -60,12 +64,12 @@ public class AuthService {
                  .updatedAt(savedUser.getUpdatedAt())
                  .build();
     }
-    
+     
     private Users toUsers(RegisterRequest request) {
     	 Users newUser = Users.builder()
                  .name(request.getName())
                  .email(request.getEmail())
-                 .password(request.getPassword())
+                 .password(passwordEncoder.encode(request.getPassword()))
                  .profileImageUrl(request.getProfileImageUrl())
                  .subscriptionPlan(request.getSubscriptionPlan())
                  .verificationToken(UUID.randomUUID().toString())
@@ -125,5 +129,25 @@ public class AuthService {
      
      usersRepository.save(user);
      }
+    
+    
+    public AuthResponse login(LoginRequest req) {
+    	
+    	Users existingUser = usersRepository.findByEmail(req.getEmail()).orElseThrow(()-> new UsernameNotFoundException("Invalid Email"));
+    	
+    	if(!passwordEncoder.matches(req.getPassword(), existingUser.getPassword())){
+    		throw new  UsernameNotFoundException("Invalid Password");
+    	}
+    	
+    	String jwt = "Jwt45353434";
+    	 
+    	
+    	AuthResponse response = toResponse(existingUser);
+    	 response.setJwtToken(jwt);
+    	
+    	 return response;
+    	
+    	
+    }
     
 }

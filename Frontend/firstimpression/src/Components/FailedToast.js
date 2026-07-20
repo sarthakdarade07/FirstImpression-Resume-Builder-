@@ -4,6 +4,13 @@ import { AlertCircle, X } from "lucide-react"; // Swapped CheckCircle2 for Alert
 const FailedToast = ({ message, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);
 
+  const handleClose = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onClose();
+    }, 400);
+  };
+
   useEffect(() => {
     // Start the exit "float up" animation slightly before 4 seconds
     const exitTimer = setTimeout(() => {
@@ -55,7 +62,7 @@ const FailedToast = ({ message, onClose }) => {
 
         {/* Optional Manual Close Button */}
         <button
-          onClick={() => setIsExiting(true)}
+          onClick={handleClose}
           className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-1">
           <X className="w-4 h-4" strokeWidth={2} />
         </button>
