@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --theme-red-start: #FF4E00;
+  --theme-red-end: #E92B65;
+  --theme-red: #FF5A00;
+  --theme-red-hover: #F15A2B;
+  
+  --auth-bg-padding: 0px;
+  --auth-form-padding: 1.5rem; /* 24px */
+  --auth-border-radius: 0;
+}
+
+@media (min-width: 640px) { /* sm */
+  :root {
+    --auth-bg-padding: 1.5rem; /* 24px */
+    --auth-form-padding: 2rem; /* 32px */
+    --auth-border-radius: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) { /* lg */
+  :root {
+    --auth-bg-padding: 2rem; /* 32px */
+    --auth-form-padding: 3rem; /* 48px */
+  }
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

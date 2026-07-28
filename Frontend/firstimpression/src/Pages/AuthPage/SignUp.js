@@ -52,7 +52,7 @@ const SignUp = ({ onNavigateToLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-0 sm:p-6 lg:p-8 font-sans">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-[var(--auth-bg-padding)] font-sans">
       <style>
         {`
           @keyframes slideInRight {
@@ -88,9 +88,9 @@ const SignUp = ({ onNavigateToLogin }) => {
       </style>
 
       {/* Main Container */}
-      <div className="w-full max-w-[1200px] flex flex-col-reverse md:flex-row sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative bg-white md:h-[90vh]">
+      <div className="w-full max-w-[1200px] flex flex-col-reverse md:flex-row rounded-[var(--auth-border-radius)] overflow-hidden shadow-2xl relative bg-white md:h-[90vh]">
         {/* Left Side (Dark Section) - Image below on mobile */}
-        <div className="w-full md:w-1/2 bg-[#282321] min-h-[300px] sm:min-h-[400px] md:min-h-0 flex flex-col relative overflow-hidden flex-shrink-0">
+        <div className="w-full md:w-1/2 bg-[#282321] min-h-[200px] md:min-h-0 hidden sm:flex flex-col relative overflow-hidden flex-shrink-0">
           <div className="absolute inset-0 w-full h-full">
             <img
               src={mainImage}
@@ -102,7 +102,7 @@ const SignUp = ({ onNavigateToLogin }) => {
 
         {/* Right Side (White Section) - Form on top on mobile */}
         <div
-          className="w-full md:w-1/2 bg-white p-6 sm:p-8 md:p-12 overflow-y-auto form-scroll"
+          className="w-full md:w-1/2 bg-white p-[var(--auth-form-padding)] overflow-y-auto form-scroll"
           style={{ animation: "slideInRight 0.6s ease-out forwards" }}>
           <div className="flex flex-col min-h-full justify-between gap-8">
             {/* Header */}
@@ -188,7 +188,7 @@ const SignUp = ({ onNavigateToLogin }) => {
                       <Eye
                         size={20}
                         strokeWidth={1.5}
-                        className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
+                       className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
                       />
                     ) : (
                       <EyeOff
