@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserPlus, EyeOff, LogIn, ChevronDown, Eye } from "lucide-react";
-import SuccessToast from "../../Components/SuccessToast";
-import FailedToast from "../../Components/FailedToast";
+import SuccessToast from "../Notifications/SuccessToast";
+import FailedToast from "../Notifications/FailedToast";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
 

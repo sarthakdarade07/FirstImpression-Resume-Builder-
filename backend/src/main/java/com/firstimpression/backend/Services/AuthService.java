@@ -1,9 +1,15 @@
 package com.firstimpression.backend.Services;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,9 +18,12 @@ import com.firstimpression.backend.Exception.ResourceExistsException;
 import com.firstimpression.backend.Repository.UsersRepository;
 import com.firstimpression.backend.dto.AuthResponse;
 import com.firstimpression.backend.dto.LoginRequest;
+import com.firstimpression.backend.dto.OtpVerificationResponse;
 import com.firstimpression.backend.dto.RegisterRequest;
 import com.firstimpression.backend.model.Users;
+import com.firstimpression.backend.util.JwtUtil;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +37,7 @@ public class AuthService {
     private final UsersRepository usersRepository;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -83,7 +93,8 @@ public class AuthService {
     	
     	log.info("Inside Auth Service - Sending email verification{}",newUser);
     	try {
-    		String link = appBaseUrl+"/api/auth/verify-email?token="+newUser.getVerificationToken();
+    		String link = appBaseUrl+"/api/auth/verify-email?token="+newUser.getVerificationToken()+
+    				"&email="+newUser.getEmail();
     		String subject = "Verification mail for firstimpression";
     		String html = """
     			    <div style="font-family: sans-serif; color: #333333; line-height: 1.5; text-align: center;">
@@ -138,8 +149,12 @@ public class AuthService {
     	if(!passwordEncoder.matches(req.getPassword(), existingUser.getPassword())){
     		throw new  UsernameNotFoundException("Invalid Password");
     	}
+    	 
+    	if(!existingUser.isEmailVerified()) {
+    		throw new RuntimeException("Please verify your email befor log in...");
+    	}
     	
-    	String jwt = "Jwt45353434";
+    	String jwt = jwtUtil.generateToken(existingUser.getId());
     	 
     	
     	AuthResponse response = toResponse(existingUser);
@@ -148,6 +163,129 @@ public class AuthService {
     	 return response;
     	
     	
+    } 
+    
+    public void resendVerification(String email) {
+    	
+		log.info("Inside AuthSerive - resendVerification():{} ",email);
+
+    	//1.find user by email
+    	
+    	Users user = usersRepository.findByEmail(email)
+    			        .orElseThrow(()->new RuntimeException("This Email id not registered."));
+    	
+    	//2. Check if email is verified
+    	if(user.isEmailVerified()) {
+    		throw new RuntimeException("Email is already Verififed.");
+    	}
+    	
+    	//3. Set new verification token
+    	user.setVerificationToken(UUID.randomUUID().toString());
+    	user.setVerificationExpires(LocalDateTime.now().plusHours(24)); 
+    	
+    	
+    	//4 updater the user
+    	
+    	usersRepository.save(user);
+    	
+    	//5.resend verification mail
+    	
+    	sendVerificationEmail(user);
+    	
+    }
+    
+    
+    public AuthResponse getProfile (Object principalObj) {
+    	log.info("Inside AuthResponse- getProfile():{}",principalObj);
+    	
+    Users existingUser =(Users)principalObj;
+    
+    return toResponse(existingUser);
+    	  
+    }
+    
+    public void forgotPassword(String email) throws IOException, MessagingException {
+    	
+    	log.info("Inside AuthService-forgetPassword():{}",email);
+
+    	//1.verify if email id is registered
+    	Users user = usersRepository.findByEmail(email)
+    			       .orElseThrow(()->new RuntimeException("Email not registered."));
+    	
+    	 
+    	//2.generate otp & save it to user
+    	String otp = OtpService.generateOtp();
+    	user.setOtp(otp);
+    	user.setOtpExpires(LocalDateTime.now().plusMinutes(3));
+    	usersRepository.save(user);
+    	
+    	
+    	//3. create html for email
+    	
+    	 ClassPathResource resource = new ClassPathResource("templates/forget-password-email.html");
+    	 
+    	 String html = new String(
+    	            resource.getInputStream().readAllBytes(),
+    	            StandardCharsets.UTF_8
+    	    );
+    	 
+    	 html = html.replace("{{OTP}}", otp);
+    	 //4. send Html
+    	 String sub = "Reset Password"; 
+    	 
+    	 emailService.sendHtmlEmail(email,sub,html);
+    		
+    } 
+     
+    public OtpVerificationResponse verifyOtp(String email ,String otp) {
+    	 
+    	log.info("Inside:AuthSerive-verifyOtp():{}",email,otp);
+    	
+    	Users user = usersRepository.findByEmailAndOtp(email,otp)
+    			    .orElseThrow(()->new RuntimeException("OTP invalid"));
+    	if(user.getOtp()==null || LocalDateTime.now().isAfter(user.getOtpExpires())) {
+    		throw new RuntimeException("Otp Expired.");
+    	}
+    	
+    	if(!user.getOtp().equals(otp)) { 
+    		throw new RuntimeException("Wrong Otp.");
+    	}
+    	
+    	user.setOtp(null);
+    	user.setOtpExpires(null);
+    	user.setResetToken(UUID.randomUUID().toString());
+    	user.setResetTokenExpires(LocalDateTime.now().plusMinutes(5));
+    	usersRepository.save(user);
+    	
+    	return OtpVerificationResponse.builder() 
+    	 .resetToken(user.getResetToken())
+        .build();
+    		
+    }
+    
+    
+    public void resetPassword(String resetToken,String newPassword){
+    	 
+        log.info("Inside:AuthSerive-resetPassword():{}");
+    	
+    	Users user = usersRepository.findByResetToken(resetToken)
+    			    .orElseThrow(()->new RuntimeException("Token Invalid")); 
+    	
+    	if(user.getResetToken()==null || LocalDateTime.now().isAfter(user.getResetTokenExpires())) {
+    		throw new RuntimeException("Token Expired.");
+    	}
+    	
+    	if(!user.getResetToken().equals(resetToken)) { 
+    		throw new RuntimeException("Wrong Otp.");
+    	}
+    	
+    	user.setResetToken(null);
+    	user.setResetTokenExpires(null);
+    	user.setPassword(passwordEncoder.encode(newPassword)); 
+    	usersRepository.save(user);
+    	
+    	
+    		
     }
     
 }

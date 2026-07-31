@@ -1,49 +1,41 @@
 import React, { useState } from "react";
-import { ArrowLeft, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail } from "lucide-react";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
-import SuccessToast from "../../Components/SuccessToast";
-import FailedToast from "../../Components/FailedToast";
+import SuccessToast from "../Notifications/SuccessToast";
+import FailedToast from "../Notifications/FailedToast";
 
-const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const handleChangePassword = async (e) => {
+  const handleGetOtp = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-    
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/reset-password", {
+      const response = await fetch("http://localhost:8080/api/auth/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({resetToken, newPassword }),
+        body: JSON.stringify({ email }),
       });
 
-        const data = await response.json();
-
+      const data = await response.json();
+      
       if (!response.ok) {
-        setError(data.error);
+         setError(data.error);
       } else {
-        setMsg(data.message || "Password changed successfully!");
+        setMsg(data.message || "OTP sent successfully!");
         setShowToast(true);
         setTimeout(() => {
-          onBackToLogin();
-        }, 2000);
+          onNavigateToOtp(email);
+        }, 2000); // Navigate to OTP after 2 seconds
       }
     } catch (err) {
       setError(err.message || "An error occurred");
@@ -103,56 +95,33 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
               </button>
             </div>
 
-            {/* Change Password Form */}
+            {/* Forgot Password Form */}
             <div className="max-w-[420px] w-full mx-auto flex-grow flex flex-col justify-center py-8 md:py-0">
               <h2 className="text-3xl sm:text-[2.75rem] font-medium text-gray-900 mb-4 tracking-tight text-center md:text-left leading-tight">
-                Reset Password
+                Forgot Password
               </h2>
               <p className="text-gray-500 mb-8 sm:mb-10 text-center md:text-left">
-                Enter a new password for <span className="font-semibold text-gray-800">{email}</span>.
+                Enter your email address and we'll send you a 6-digit OTP to reset your password.
               </p>
 
-              <form className="space-y-4 sm:space-y-5" onSubmit={handleChangePassword}>
-                <div className="relative">
+              <form className="space-y-4 sm:space-y-5" onSubmit={handleGetOtp}>
+                <div>
                   <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="New Password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
                     required
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                    {showPassword ? <Eye size={20} strokeWidth={1.5} /> : <EyeOff size={20} strokeWidth={1.5} />}
-                  </button>
-                </div>
-
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm New Password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                    {showConfirmPassword ? <Eye size={20} strokeWidth={1.5} /> : <EyeOff size={20} strokeWidth={1.5} />}
-                  </button>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
                   className={`w-full mt-4 sm:mt-6 bg-gradient-to-r from-theme-red-start to-theme-red-end hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
-                  <Lock size={18} strokeWidth={2} />
-                  {isLoading ? "Saving..." : "Change Password"}
+                  <Mail size={18} strokeWidth={2} />
+                  {isLoading ? "Sending OTP..." : "Get OTP"}
                 </button>
 
                 {showToast && (
@@ -177,4 +146,4 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
   );
 };
 
-export default ChangePassword;
+export default ForgotPassword;

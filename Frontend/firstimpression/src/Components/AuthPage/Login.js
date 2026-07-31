@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { User, EyeOff, Eye, LogIn, ChevronDown } from "lucide-react";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
-import SuccessToast from "../../Components/SuccessToast";
-import FailedToast from "../../Components/FailedToast";
+import SuccessToast from "../Notifications/SuccessToast";
+import FailedToast from "../Notifications/FailedToast";
 
 const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
   const [emailOrUsername, setEmailOrUsername] = useState("");

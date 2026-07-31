@@ -1,41 +1,74 @@
-import React, { useState } from "react";
-import { ArrowLeft, Mail } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
-import SuccessToast from "../../Components/SuccessToast";
-import FailedToast from "../../Components/FailedToast";
+import SuccessToast from "../Notifications/SuccessToast";
+import FailedToast from "../Notifications/FailedToast";
 
-const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
-  const [email, setEmail] = useState("");
+const OtpVerification = ({ email, onBackToLogin, onNavigateToChangePassword }) => {
+  const [otp, setOtp] = useState(new Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [msg, setMsg] = useState("");
+  const inputRefs = useRef([]);
 
-  const handleGetOtp = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+
+    setOtp([...otp.map((d, idx) => (idx === index ? element.value : d))]);
+
+    // Focus next input
+    if (element.nextSibling && element.value !== "") {
+      element.nextSibling.focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      if (otp[index] === "" && e.target.previousSibling) {
+        e.target.previousSibling.focus();
+      }
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      handleVerifyOtp();
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    if (e) e.preventDefault();
+    const otpValue = otp.join("");
+    if (otpValue.length < 6) {
+      setError("Please enter the 6-digit OTP.");
+      return;
+    }
+    
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/forgot-password", {
+      const response = await fetch("http://localhost:8080/api/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, otp: otpValue }),
       });
-
-      const data = await response.json();
-      
+        const data = await response.json();
       if (!response.ok) {
-         setError(data.error);
+        setError(data.error || "Invalid or expired OTP");
       } else {
-        setMsg(data.message || "OTP sent successfully!");
+        setMsg(data.message || "OTP verified successfully!");
         setShowToast(true);
         setTimeout(() => {
-          onNavigateToOtp(email);
-        }, 2000); // Navigate to OTP after 2 seconds
+          onNavigateToChangePassword(email, data.response.resetToken);
+        }, 2000);
       }
     } catch (err) {
       setError(err.message || "An error occurred");
@@ -95,34 +128,45 @@ const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
               </button>
             </div>
 
-            {/* Forgot Password Form */}
+            {/* OTP Verification Form */}
             <div className="max-w-[420px] w-full mx-auto flex-grow flex flex-col justify-center py-8 md:py-0">
               <h2 className="text-3xl sm:text-[2.75rem] font-medium text-gray-900 mb-4 tracking-tight text-center md:text-left leading-tight">
-                Forgot Password
+                Verify OTP
               </h2>
               <p className="text-gray-500 mb-8 sm:mb-10 text-center md:text-left">
-                Enter your email address and we'll send you a 6-digit OTP to reset your password.
+                We have sent a 6-digit OTP to your email: <br/> <span className="font-semibold text-gray-800">{email}</span>
               </p>
 
-              <form className="space-y-4 sm:space-y-5" onSubmit={handleGetOtp}>
-                <div>
-                  <input
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
-                    required
-                  />
+              <form className="space-y-6" onSubmit={handleVerifyOtp}>
+                <div className="flex justify-center gap-2 sm:gap-3">
+                  {otp.map((data, index) => {
+                    return (
+                      <input
+                        className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors"
+                        type="text"
+                        name="otp"
+                        maxLength="1"
+                        key={index}
+                        value={data}
+                        onChange={e => handleChange(e.target, index)}
+                        onKeyDown={e => handleKeyDown(e, index)}
+                        ref={el => inputRefs.current[index] = el}
+                      />
+                    );
+                  })}
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full mt-4 sm:mt-6 bg-gradient-to-r from-theme-red-start to-theme-red-end hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
-                  <Mail size={18} strokeWidth={2} />
-                  {isLoading ? "Sending OTP..." : "Get OTP"}
+                  className={`w-full mt-6 bg-gradient-to-r from-theme-red-start to-theme-red-end hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
+                  <CheckCircle2 size={18} strokeWidth={2} />
+                  {isLoading ? "Verifying..." : "Verify OTP"}
                 </button>
+
+                <p className="text-center text-sm text-gray-500 mt-4">
+                  Didn't receive code? <button type="button" className="text-theme-red-hover hover:underline font-medium">Resend OTP</button>
+                </p>
 
                 {showToast && (
                   <SuccessToast
@@ -146,4 +190,4 @@ const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
   );
 };
 
-export default ForgotPassword;
+export default OtpVerification;

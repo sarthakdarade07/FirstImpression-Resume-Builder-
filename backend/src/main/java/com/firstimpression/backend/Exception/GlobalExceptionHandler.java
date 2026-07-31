@@ -54,8 +54,21 @@ public class GlobalExceptionHandler {
     	response.put("message", "Resource Exists");
     	response.put("error", e.getMessage()); 
     	
-    	return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    	return ResponseEntity.status(HttpStatus.CONFLICT).body(response); 
     	
+    }
+    
+    @ExceptionHandler(RuntimeException.class) 
+    public ResponseEntity<Map<String,Object>> handleRunTimeException(RuntimeException e){
+    	
+    	log.info("Inside GlobalExceptionHandler - handleRunTimeException():{}",e.getMessage());
+
+    	Map<String,Object> response = new HashMap<>();
+    	
+    	response.put("message","Runtime error.");
+    	response.put("error",e.getMessage());
+    	  
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
     
     @ExceptionHandler(Exception.class)

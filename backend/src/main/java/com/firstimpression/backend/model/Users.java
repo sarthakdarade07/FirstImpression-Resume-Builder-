@@ -53,7 +53,13 @@ public class Users {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
+    
+    private String otp=null;
+    private LocalDateTime otpExpires;
+    private String resetToken;
+    private LocalDateTime resetTokenExpires;
+    
+    
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();

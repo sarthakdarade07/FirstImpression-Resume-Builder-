@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Login from "./Login";
-import SignUp from "./SignUp";
-import ForgotPassword from "./ForgotPassword";
-import OtpVerification from "./OtpVerification";
-import ChangePassword from "./ChangePassword";
-import SuccessToast from "../../Components/SuccessToast";
+import Login from "../Components/AuthPage/Login";
+import SignUp from "../Components/AuthPage/SignUp";
+import ForgotPassword from "../Components/AuthPage/ForgotPassword";
+import OtpVerification from "../Components/AuthPage/OtpVerification";
+import ChangePassword from "../Components/AuthPage/ChangePassword";
+import SuccessToast from "../Components/Notifications/SuccessToast";
 
 const AuthPage = () => {
   const [currentView, setCurrentView] = useState("login"); // login, signup, forgotPassword, otp, changePassword

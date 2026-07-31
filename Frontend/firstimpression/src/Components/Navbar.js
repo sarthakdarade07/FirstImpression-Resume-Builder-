@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
-const Navbar = () => {
+const Navbar = ({ isSplashFinished = true }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -14,80 +15,54 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="h-8">
-      <div
-        className={`
-        fixed top-6 left-1/2 -translate-x-1/2 z-50 
-        flex items-center justify-between p-2 
-        rounded-full transition-all duration-500 ease-in-out shadow-2xl
-        w-[95%] max-w-[850px]
-        ${
-          isScrolled
-            ? "bg-white text-red-600 dark:bg-[#1a1a1a] dark:text-white"
-            : "bg-white/30 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-gray-900 dark:text-white"
-        }
-      `}>
-        {/* Left Planet Icon */}
-        <div
-          className={`
-          w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors duration-500
-          ${
-            isScrolled
-              ? "bg-red-600 text-white dark:bg-white dark:text-black"
-              : "bg-white text-black"
-          }
-        `}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round">
-            <circle cx="12" cy="12" r="6" />
-            <ellipse
-              cx="12"
-              cy="12"
-              rx="10"
-              ry="3"
-              transform="rotate(-45 12 12)"
-            />
-          </svg>
-        </div>
+    <motion.nav 
+      initial={false}
+      animate={isSplashFinished ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+      transition={{ duration: 0.8, delay: isSplashFinished ? 0.3 : 0, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
+        isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 h-24 flex items-center justify-between">
+        
+        {/* Left Logo Area - Left empty because SplashScreen.js lands exactly here! */}
+        <div className="w-[200px]"></div>
 
         {/* Middle Links */}
-        <div className="hidden md:flex items-center gap-10 font-medium text-[15px]">
-          <a href="#work" className="hover:opacity-70 transition-opacity">
-            Work
+        <div className="hidden md:flex items-center gap-10 font-medium text-[15px] text-gray-700">
+          <a href="#work" className="hover:text-[var(--theme-red-hover)] transition-colors">
+            Templates
           </a>
-          <a href="#about" className="hover:opacity-70 transition-opacity">
-            About
+          <a href="#about" className="hover:text-[var(--theme-red-hover)] transition-colors">
+            Features
           </a>
-          <a href="#playground" className="hover:opacity-70 transition-opacity">
-            Playground
+          <a href="#playground" className="hover:text-[var(--theme-red-hover)] transition-colors">
+            Examples
           </a>
-          <a href="#resource" className="hover:opacity-70 transition-opacity">
-            Resource
+          <a href="#resource" className="hover:text-[var(--theme-red-hover)] transition-colors">
+            Pricing
           </a>
         </div>
 
         {/* Right Button */}
-        <button
-          className={`
-          h-12 px-6 rounded-full font-medium flex items-center justify-center shrink-0 transition-colors duration-500
-          ${
-            isScrolled
-              ? "bg-red-600 text-white hover:bg-red-700 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-              : "bg-white text-black hover:bg-gray-100"
-          }
-        `}>
-          Copy email address
-        </button>
+        <div className="flex items-center gap-4">
+          <button className="hidden sm:block text-gray-700 font-medium hover:text-[var(--theme-red-hover)] transition-colors">
+            Log in
+          </button>
+          <button
+            className={`
+            h-11 px-6 rounded-full font-semibold flex items-center justify-center shrink-0 transition-all duration-300
+            ${
+              isScrolled
+                ? "bg-gradient-to-r from-[var(--theme-red-start)] to-[var(--theme-red-end)] text-white hover:shadow-md hover:-translate-y-0.5"
+                : "bg-gray-900 text-white hover:bg-gray-800 hover:-translate-y-0.5"
+            }
+          `}>
+            Get Started
+          </button>
+        </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

@@ -11,7 +11,10 @@ import com.firstimpression.backend.model.Users;
 public interface UsersRepository extends JpaRepository<Users, String> {
 	Optional<Users> findByEmail(String email);
 	
- public Boolean existsByEmail(String email);
+ public Boolean existsByEmail(String email); 
  
  public Optional<Users> findByVerificationToken(String tkn);
+ 
+ Optional<Users> findByEmailAndOtp(String email, String otp);
+ Optional<Users> findByResetToken(String tkn); 
 }
