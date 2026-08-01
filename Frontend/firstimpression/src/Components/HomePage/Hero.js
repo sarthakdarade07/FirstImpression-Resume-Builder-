@@ -1,7 +1,7 @@
 import React from "react";
 import { Sparkles, ArrowRight, FileText, Target, Briefcase, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import HeroImg from "../../Assets/images/firstimpression-hero-image.png";
+import HeroVideo from "../../Assets/videos/firstimpression-hero_video.webm";
 
 export default function Hero({ isSplashFinished = true }) {
   const features = [
@@ -9,9 +9,9 @@ export default function Hero({ isSplashFinished = true }) {
     { icon: <Target className="w-5 h-5 text-[var(--theme-red)]" />, text: "ATS-Friendly" },
     { icon: <Briefcase className="w-5 h-5 text-[var(--theme-red)]" />, text: "Professional Templates" },
   ];
-
+ 
   // A high-quality placeholder video related to work/resume (Pixabay/Mixkit fallback)
-  const videoUrl = "https://cdn.pixabay.com/video/2020/05/14/38841-419266624_large.mp4";
+  const videoUrl = HeroVideo;
 
   return (
     <section className="relative min-h-screen bg-gray-50 overflow-hidden pt-24 flex items-center">
@@ -19,7 +19,7 @@ export default function Hero({ isSplashFinished = true }) {
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-[var(--theme-red-light)] rounded-full blur-3xl opacity-50 z-0"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-red-100 rounded-full blur-3xl opacity-40 z-0"></div>
 
-      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 sm:pb-8 lg:px-12 relative z-10 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Left Text Content (Slides from left to right) */}
