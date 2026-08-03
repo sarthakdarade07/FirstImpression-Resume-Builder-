@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX, Play } from 'lucide-react';
 import HeroVideo from "../../Assets/videos/firstimpression-ad-video.webm";
@@ -7,6 +7,33 @@ const AdvertisementVideo = () => {
   const videoRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        // When the video component moves out of the screen (less than 10% visible)
+        if (!entry.isIntersecting) {
+          if (videoRef.current && !videoRef.current.muted) {
+            videoRef.current.muted = true;
+            setIsMuted(true);
+          }
+        }
+      },
+      { threshold: 0.1 } // Trigger when less than 10% of the video is visible
+    );
+
+    const currentVideo = videoRef.current;
+    if (currentVideo) {
+      observer.observe(currentVideo);
+    }
+
+    return () => {
+      if (currentVideo) {
+        observer.unobserve(currentVideo);
+      }
+    };
+  }, []);
 
   const toggleMute = (e) => {
     e.stopPropagation(); // Prevent video pause/play if clicking mute

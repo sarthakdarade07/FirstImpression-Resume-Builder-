@@ -19,7 +19,7 @@ export default function Hero({ isSplashFinished = true }) {
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-[var(--theme-red-light)] rounded-full blur-3xl opacity-50 z-0"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-red-100 rounded-full blur-3xl opacity-40 z-0"></div>
 
-      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 sm:pb-8 lg:px-12 relative z-10 w-full">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 pb-8 lg:px-12 relative z-10 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Left Text Content (Slides from left to right) */}
@@ -92,6 +92,7 @@ export default function Hero({ isSplashFinished = true }) {
                 loop
                 muted
                 playsInline
+                preload="auto"
                 className="relative z-10 w-full aspect-[3/4] sm:aspect-[9/16] lg:aspect-[9/16] rounded-[2rem] shadow-2xl border border-white/50 object-cover"
               >
                 <source src={videoUrl} type="video/mp4" />

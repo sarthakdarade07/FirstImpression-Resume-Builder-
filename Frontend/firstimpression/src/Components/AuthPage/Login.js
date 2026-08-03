@@ -4,6 +4,7 @@ import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
 import SuccessToast from "../Notifications/SuccessToast";
 import FailedToast from "../Notifications/FailedToast";
+import { HashLink } from "react-router-hash-link";
 
 const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -92,12 +93,12 @@ const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
               </div>
 
               {/* Sign Up Link */}
-              <button
-                onClick={onNavigateToSignUp}
+              <HashLink smooth to="/sign-up"
+                
                 className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
                 <User size={18} strokeWidth={1.5} />
                 Sign Up
-              </button>
+              </HashLink>
             </div>
 
             {/* Login Form */}

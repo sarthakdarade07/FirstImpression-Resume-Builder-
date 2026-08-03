@@ -4,6 +4,7 @@ import SuccessToast from "../Notifications/SuccessToast";
 import FailedToast from "../Notifications/FailedToast";
 import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
+import { HashLink } from "react-router-hash-link";
 
 
 const SignUp = ({ onNavigateToLogin }) => {
@@ -121,12 +122,11 @@ const SignUp = ({ onNavigateToLogin }) => {
               </div>
 
               {/* Back to Login Link */}
-              <button
-                onClick={onNavigateToLogin}
+              <HashLink smooth to="/sign-in"
                 className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
                 <LogIn size={18} strokeWidth={1.5} />
                 Sign In
-              </button>
+              </HashLink>
             </div>
 
             {/* Sign Up Form */}

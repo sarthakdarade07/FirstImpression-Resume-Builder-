@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { HashLink } from "react-router-hash-link";
 
 const Navbar = ({ isSplashFinished = true }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,26 +31,26 @@ const Navbar = ({ isSplashFinished = true }) => {
 
         {/* Middle Links */}
         <div className="hidden md:flex items-center gap-10 font-medium text-[15px] text-gray-700">
-          <a href="#work" className="hover:text-[var(--theme-red-hover)] transition-colors">
+          <HashLink smooth to="/templates" className="hover:text-[var(--theme-red-hover)] transition-colors">
             Templates
-          </a>
-          <a href="#about" className="hover:text-[var(--theme-red-hover)] transition-colors">
+          </HashLink>
+          <HashLink to="/features" className="hover:text-[var(--theme-red-hover)] transition-colors">
             Features
-          </a>
-          <a href="#playground" className="hover:text-[var(--theme-red-hover)] transition-colors">
+          </HashLink>
+          <HashLink to="/pricing" className="hover:text-[var(--theme-red-hover)] transition-colors">
             Examples
-          </a>
-          <a href="#resource" className="hover:text-[var(--theme-red-hover)] transition-colors">
-            Pricing
-          </a>
+          </HashLink>
+          <HashLink href="/about-us" className="hover:text-[var(--theme-red-hover)] transition-colors">
+            About us
+          </HashLink>
         </div>
 
         {/* Right Button */}
         <div className="flex items-center gap-4">
-          <button className="hidden sm:block text-gray-700 font-medium hover:text-[var(--theme-red-hover)] transition-colors">
-            Log in
-          </button>
-          <button
+          <HashLink smooth to="/sign-in" className="hidden sm:block text-gray-700 font-medium hover:text-[var(--theme-red-hover)] transition-colors">
+            Sign in
+          </HashLink>
+          <HashLink smooth to="/sign-up"
             className={`
             h-11 px-6 rounded-full font-semibold flex items-center justify-center shrink-0 transition-all duration-300
             ${
@@ -59,7 +60,7 @@ const Navbar = ({ isSplashFinished = true }) => {
             }
           `}>
             Get Started
-          </button>
+          </HashLink>
         </div>
       </div>
     </motion.nav>

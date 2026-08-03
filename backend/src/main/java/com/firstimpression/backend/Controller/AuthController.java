@@ -23,12 +23,14 @@ import com.firstimpression.backend.Services.FileUploadService;
 import com.firstimpression.backend.dto.AuthResponse;
 import com.firstimpression.backend.dto.LoginRequest;
 import com.firstimpression.backend.dto.OtpVerificationResponse;
+import com.firstimpression.backend.dto.ProfileResponse;
 import com.firstimpression.backend.dto.RegisterRequest;
+import com.firstimpression.backend.model.Users;
 import com.firstimpression.backend.util.AppConstants;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor; 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -114,6 +116,14 @@ public class AuthController {
 		
 	}
 	
+	@GetMapping(AppConstants.GET_ACCOUNT_DETAILS)
+	public ResponseEntity<?> getAccountDetails(Authentication authentication) {
+
+	    Users user = (Users) authentication.getPrincipal();
+
+	    return ResponseEntity.ok(authService.getAccountDetails(user));
+	}
+	
 	@GetMapping(AppConstants.GET_PROFILE)
 	public ResponseEntity<?> getProfile(Authentication authentication){
 		log.info("Inside AuthController - getProfile():{}",authentication);
@@ -121,12 +131,12 @@ public class AuthController {
 		Object principalObject =  authentication.getPrincipal();
 		
 		//2. Call the service Method
-		AuthResponse currentProfile = authService.getProfile(principalObject);
+		ProfileResponse currentProfile = authService.getProfile(principalObject);
 		
 		//3. return response
 		return ResponseEntity.ok().body(Map.of("message",currentProfile));
 	}
-	
+	 
 
 	@PostMapping(AppConstants.FORGOT_PASSWORD)
 	public ResponseEntity<?> forgotPassword(@RequestBody Map<String,String> req) throws IOException, MessagingException{
@@ -157,7 +167,7 @@ public class AuthController {
            
 		authService.resetPassword(req.get("resetToken"), req.get("newPassword"));
 		return ResponseEntity.ok().body(Map.of("message","Password Changed."));
-
+		
 	}
 
 }
