@@ -4,7 +4,6 @@ import mainImage from "../../Assets/promotional/loginpage.webp";
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
 import SuccessToast from "../Notifications/SuccessToast";
 import FailedToast from "../Notifications/FailedToast";
-
 const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,6 +13,8 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [msg, setMsg] = useState("");
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
+
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -26,7 +27,7 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/reset-password", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

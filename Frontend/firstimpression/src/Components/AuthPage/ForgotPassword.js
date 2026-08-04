@@ -11,6 +11,7 @@ const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [msg, setMsg] = useState("");
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 
   const handleGetOtp = async (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ const ForgotPassword = ({ onBackToLogin, onNavigateToOtp }) => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/forgot-password", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

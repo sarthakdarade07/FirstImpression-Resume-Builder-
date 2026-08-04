@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import Login from "../Components/AuthPage/Login";
 import SignUp from "../Components/AuthPage/SignUp";
 import ForgotPassword from "../Components/AuthPage/ForgotPassword";
@@ -8,20 +9,33 @@ import ChangePassword from "../Components/AuthPage/ChangePassword";
 import SuccessToast from "../Components/Notifications/SuccessToast";
 
 const AuthPage = () => {
-  const [currentView, setCurrentView] = useState("login"); // login, signup, forgotPassword, otp, changePassword
+  const location = useLocation();
+  const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
   
+  const getView = () => {
+    const path = location.pathname;
+    if (path === "/sign-up") return "signup";
+    if (path === "/forgot-password") return "forgotPassword";
+    if (path === "/otp") return "otp";
+    if (path === "/change-password") return "changePassword";
+    return "login";
+  };
+  
+  const currentView = getView();
+
   // State to pass between forgot password steps
-  const [resetEmail, setResetEmail] = useState("");
-  const [resetToken, setResetToken] = useState("");
+  // We can initialize from location state if navigated with state, or fallback to local state
+  const [resetEmail, setResetEmail] = useState(location.state?.email || "");
+  const [resetToken, setResetToken] = useState(location.state?.token || "");
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
+    const queryParams = new URLSearchParams(location.search);
     if (queryParams.get("verified") === "true") {
       setShowToast(true);
-      window.history.replaceState({}, document.title, window.location.pathname);
+      window.history.replaceState({}, document.title, location.pathname);
     }
-  }, []);
+  }, [location]);
 
   return (
     // We make this relative and hidden overflow so the animations don't cause scrollbars
@@ -43,8 +57,8 @@ const AuthPage = () => {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-0 w-full h-full">
             <Login
-              onNavigateToSignUp={() => setCurrentView("signup")}
-              onNavigateToForgotPassword={() => setCurrentView("forgotPassword")}
+              onNavigateToSignUp={() => navigate("/sign-up")}
+              onNavigateToForgotPassword={() => navigate("/forgot-password")}
             />
           </motion.div>
         )}
@@ -57,7 +71,7 @@ const AuthPage = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-0 w-full h-full">
-            <SignUp onNavigateToLogin={() => setCurrentView("login")} />
+            <SignUp onNavigateToLogin={() => navigate("/sign-in")} />
           </motion.div>
         )}
 
@@ -70,10 +84,10 @@ const AuthPage = () => {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-0 w-full h-full">
             <ForgotPassword
-              onBackToLogin={() => setCurrentView("login")}
+              onBackToLogin={() => navigate("/sign-in")}
               onNavigateToOtp={(email) => {
                 setResetEmail(email);
-                setCurrentView("otp");
+                navigate("/otp", { state: { email } });
               }}
             />
           </motion.div>
@@ -89,11 +103,11 @@ const AuthPage = () => {
             className="absolute inset-0 w-full h-full">
             <OtpVerification
               email={resetEmail}
-              onBackToLogin={() => setCurrentView("login")}
+              onBackToLogin={() => navigate("/sign-in")}
               onNavigateToChangePassword={(email, token) => {
                 setResetEmail(email);
                 setResetToken(token);
-                setCurrentView("changePassword");
+                navigate("/change-password", { state: { email, token } });
               }}
             />
           </motion.div>
@@ -110,7 +124,7 @@ const AuthPage = () => {
             <ChangePassword
               email={resetEmail}
               resetToken={resetToken}
-              onBackToLogin={() => setCurrentView("login")}
+              onBackToLogin={() => navigate("/sign-in")}
             />
           </motion.div>
         )}

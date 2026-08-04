@@ -12,6 +12,8 @@ const OtpVerification = ({ email, onBackToLogin, onNavigateToChangePassword }) =
   const [showToast, setShowToast] = useState(false);
   const [msg, setMsg] = useState("");
   const inputRefs = useRef([]);
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
+
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -49,11 +51,11 @@ const OtpVerification = ({ email, onBackToLogin, onNavigateToChangePassword }) =
       return;
     }
     
-    setIsLoading(true);
+    setIsLoading(true); 
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/verify-otp", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,6 +5,8 @@ import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
 import SuccessToast from "../Notifications/SuccessToast";
 import FailedToast from "../Notifications/FailedToast";
 import { HashLink } from "react-router-hash-link";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../Contexts/UserContext";
 
 const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -13,14 +15,20 @@ const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
+  const { setUser } = useUser();
+
+
     const [msg, setMsg] = useState("");
+    const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
     
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const cleanBaseUrl = API_BASE_URL?.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+      const response = await fetch(`${cleanBaseUrl}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,8 +41,17 @@ const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
         setError("Invalid credentials");
       }else{
       const data = await response.json();
+      localStorage.setItem("jwtToken",data.response.jwtToken);
       setMsg(data.message);
       setShowToast(true);
+      setUser({
+        id: data.response.id,
+        name: data.response.name,
+        email: data.response.email,
+        subscriptionPlan: data.response.subscriptionPlan,
+        profileImageUrl: data.profileImageUrl,
+      });
+      navigate("/dashboard");
       }
       // Handle success (e.g., redirect or save token)
     } catch (err) {

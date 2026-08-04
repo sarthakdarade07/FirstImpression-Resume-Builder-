@@ -40,3 +40,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Custom Scrollbar */
+.menu-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.menu-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.menu-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--theme-red-start);
+  border-radius: 10px;
+}
+.menu-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-red-hover);
+}
+.menu-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-red-start) transparent;
+  scroll-behavior: smooth;
+}

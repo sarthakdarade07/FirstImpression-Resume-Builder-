@@ -12,7 +12,7 @@ const SignUp = ({ onNavigateToLogin }) => {
   const [showToast, setShowToast] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,7 +31,8 @@ const SignUp = ({ onNavigateToLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/register", {
+      const cleanBaseUrl = API_BASE_URL?.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+      const response = await fetch(`${cleanBaseUrl}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,6 +46,7 @@ const SignUp = ({ onNavigateToLogin }) => {
       
       } else {
         const error = await response.json();
+        console.log(error.error);
         setErrorMsg(error.error);
       }
     } catch (error) {
