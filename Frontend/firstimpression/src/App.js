@@ -1,13 +1,10 @@
-import logo from "./logo.svg";
 import "./App.css";
 import AuthPage from "./Pages/AuthPage";
-import Navbar from "./Components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
-import Login from "./Components/AuthPage/Login";
-import SignUp from "./Components/AuthPage/SignUp";
 import DashboardPage from "./Pages/DashboardPage";
 import ProfilePage from "./Pages/ProfilePage";
+import AccountPage from "./Pages/AccountPage";
 import { useUser } from "./Contexts/UserContext";
 import ProtectedRoute from "./Contexts/ProtectedRoutes";
 import { useEffect } from "react";
@@ -39,7 +36,6 @@ function App() {
         }
 
         const data = await response.json();
-
         setUser(data);
         
       } catch (err) {
@@ -72,6 +68,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <AccountPage />
             </ProtectedRoute>
           }
         />

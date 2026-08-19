@@ -75,7 +75,7 @@ const AdvertisementVideo = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            className="text-lg text-gray-500 max-w-2xl mx-auto"
           >
             Watch how our platform effortlessly transforms your experience and helps you land your dream job.
           </motion.p>

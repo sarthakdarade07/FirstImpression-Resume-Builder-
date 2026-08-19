@@ -124,7 +124,7 @@ const OtpVerification = ({ email, onBackToLogin, onNavigateToChangePassword }) =
 
               <button
                 onClick={onBackToLogin}
-                className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-theme-red font-medium transition-colors text-xs sm:text-sm">
+                className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-theme-red font-medium transition-colors text-xs sm:text-sm">
                 <ArrowLeft size={18} strokeWidth={1.5} />
                 Back to Login
               </button>

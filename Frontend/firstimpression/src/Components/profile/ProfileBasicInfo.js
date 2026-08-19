@@ -1,103 +1,152 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Briefcase, Code2, Users, Globe } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ProfileBasicInfo = ({ data }) => {
   if (!data) return null;
 
+  const firstName = data.name ? data.name.split(' ')[0] : '';
+  const lastName = data.name && data.name.split(' ').length > 1 ? data.name.split(' ').slice(1).join(' ') : '';
+
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] overflow-hidden"
-    >
-      {/* Cover Banner */}
-      <div className="h-32 md:h-48 bg-gradient-to-r from-[var(--theme-red-start)] to-[var(--theme-red-end)] relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30 mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-      </div>
-
-      <div className="px-6 md:px-10 pb-8 relative -mt-16 md:-mt-20">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-          
-          {/* Profile Photo */}
-          <div className="shrink-0 relative z-10">
+    <div>
+      <h2 className="text-[1.7rem] font-bold text-gray-900 mb-8 tracking-tight">Basic Info</h2>
+      
+      <div className="space-y-8 max-w-3xl">
+        
+        {/* Profile Photo - Matching the General tab style */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div className="w-24 h-24 rounded-[32px] bg-[#222] flex items-center justify-center text-white text-2xl font-medium shadow-md overflow-hidden flex-shrink-0">
             {data.photoUrl ? (
-              <img 
-                src={data.photoUrl} 
-                alt={data.name} 
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-xl border-4 border-white bg-white"
-              />
+              <img src={data.photoUrl} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-theme-red-start to-theme-red-end flex items-center justify-center text-white text-5xl font-bold shadow-xl border-4 border-white">
-                {data.name ? data.name.charAt(0).toUpperCase() : 'U'}
-              </div>
+              data.name ? data.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'SE'
             )}
-            <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-4 border-white rounded-full shadow-sm"></div>
           </div>
-
-          {/* Basic Details */}
-          <div className="flex-1 pt-2 md:pt-24 space-y-4">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{data.name || 'Your Name'}</h2>
-              <div className="flex flex-wrap items-center gap-3 mt-3 text-gray-600 font-medium">
-                {data.role && (
-                  <span className="flex items-center gap-1.5 bg-[var(--theme-red-start)]/10 px-3.5 py-1.5 rounded-full text-sm border border-[var(--theme-red-start)]/20 text-theme-red shadow-sm">
-                    <Briefcase className="w-4 h-4 text-theme-red" />
-                    {data.role}
-                  </span>
-                )}
-                {data.location && (
-                  <span className="flex items-center gap-1.5 bg-[var(--theme-red-start)]/10 px-3.5 py-1.5 rounded-full text-sm border border-[var(--theme-red-start)]/20 text-theme-red shadow-sm">
-                    <MapPin className="w-4 h-4 text-theme-red" />
-                    {data.location}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-x-8 gap-y-3 pt-2 text-sm text-gray-600 font-medium">
-              {data.email && (
-                <a href={`mailto:${data.email}`} className="flex items-center gap-2 hover:text-theme-red transition-colors group">
-                  <div className="p-1.5 rounded-lg bg-gray-50 group-hover:bg-theme-red/10 transition-colors border border-gray-100">
-                    <Mail className="w-4 h-4 text-gray-400 group-hover:text-theme-red" />
-                  </div>
-                  {data.email}
-                </a>
-              )}
-              {data.phoneNo && (
-                <a href={`tel:${data.phoneNo}`} className="flex items-center gap-2 hover:text-theme-red transition-colors group">
-                  <div className="p-1.5 rounded-lg bg-gray-50 group-hover:bg-theme-red/10 transition-colors border border-gray-100">
-                    <Phone className="w-4 h-4 text-gray-400 group-hover:text-theme-red" />
-                  </div>
-                  {data.phoneNo}
-                </a>
-              )}
+          <div>
+            <h4 className="text-gray-900 font-bold mb-1">Profile photo</h4>
+            <p className="text-sm text-gray-500 mb-4">We support PNGs, JPEGs and GIFs under 10MB</p>
+            <div className="flex flex-wrap gap-3">
+              <button className="inline-flex items-center justify-center px-6 py-2.5 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-500 shadow-sm">
+                Upload new picture
+              </button>
             </div>
           </div>
-          
-          {/* Social Links aligned right */}
-          <div className="flex flex-row md:flex-col gap-3 pt-4 md:pt-24 md:ml-auto w-full md:w-auto border-t border-gray-100 md:border-0 mt-4 md:mt-0">
-            {data.linkedinUrl && (
-              <a href={data.linkedinUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center p-3 rounded-xl bg-[#0A66C2]/5 text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition-colors border border-[#0A66C2]/20 shadow-sm" title="LinkedIn">
-                <Users className="w-5 h-5" />
-              </a>
-            )}
-            {data.githubUrl && (
-              <a href={data.githubUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center p-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-800 hover:text-white transition-colors border border-gray-200 shadow-sm" title="GitHub">
-                <Code2 className="w-5 h-5" />
-              </a>
-            )}
-            {data.portfolioUrl && (
-              <a href={data.portfolioUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center p-3 rounded-xl bg-[var(--theme-red-start)]/5 text-theme-red hover:bg-gradient-to-r hover:from-[var(--theme-red-start)] hover:to-[var(--theme-red-end)] hover:text-white transition-all border border-[var(--theme-red-start)]/20 shadow-sm" title="Portfolio">
-                <Globe className="w-5 h-5" />
-              </a>
-            )}
-          </div>
-
         </div>
+
+        {/* Name Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">First name</label>
+            <input 
+              type="text" 
+              defaultValue={firstName}
+              readOnly
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Last name</label>
+            <input 
+              type="text" 
+              defaultValue={lastName}
+              readOnly
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+            />
+          </div>
+        </div>
+
+        {/* Role & Location */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Role / Headline</label>
+            <input 
+              type="text" 
+              defaultValue={data.role || ''}
+              readOnly
+              placeholder="e.g. Software Engineer"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Location</label>
+            <input 
+              type="text" 
+              defaultValue={data.location || ''}
+              readOnly
+              placeholder="e.g. New York, NY"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+        </div>
+
+        <hr className="border-gray-100 my-8" />
+
+        {/* Contact Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Email Address</label>
+            <input 
+              type="email" 
+              defaultValue={data.email || ''}
+              readOnly
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-500 font-medium cursor-not-allowed"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
+            <input 
+              type="tel" 
+              defaultValue={data.phoneNo || ''}
+              readOnly
+              placeholder="No phone number"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+        </div>
+
+        <hr className="border-gray-100 my-8" />
+
+        {/* Social Links */}
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">LinkedIn URL</label>
+            <input 
+              type="url" 
+              defaultValue={data.linkedinUrl || ''}
+              readOnly
+              placeholder="https://linkedin.com/in/username"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">GitHub URL</label>
+            <input 
+              type="url" 
+              defaultValue={data.githubUrl || ''}
+              readOnly
+              placeholder="https://github.com/username"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Portfolio URL</label>
+            <input 
+              type="url" 
+              defaultValue={data.portfolioUrl || ''}
+              readOnly
+              placeholder="https://yourwebsite.com"
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium placeholder-gray-400"
+            />
+          </div>
+        </div>
+        
+        <div className="pt-4">
+          <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+            Save changes
+          </button>
+        </div>
+
       </div>
-    </motion.div>
+    </div>
   );
 };
 

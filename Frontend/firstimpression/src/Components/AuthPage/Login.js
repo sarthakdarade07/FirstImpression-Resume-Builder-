@@ -1,83 +1,80 @@
-import React, { useState } from "react";
+// src/Components/Login.jsx
+
+import React from "react";
+
 import { User, EyeOff, Eye, LogIn, ChevronDown } from "lucide-react";
+
 import mainImage from "../../Assets/promotional/loginpage.webp";
+
 import icon_logo from "../../Assets/promotional/Firstimpression_icon_logo.webp";
+
 import SuccessToast from "../Notifications/SuccessToast";
 import FailedToast from "../Notifications/FailedToast";
+
 import { HashLink } from "react-router-hash-link";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../Contexts/UserContext";
+
+import useLogin from "./Hooks/useLogin";
 
 const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
-  const [emailOrUsername, setEmailOrUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
-  const { setUser } = useUser();
+  const {
+    emailOrUsername,
+    password,
 
+    showPassword,
+    isLoading,
 
-    const [msg, setMsg] = useState("");
-    const navigate = useNavigate();
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    
-    try {
-      const cleanBaseUrl = API_BASE_URL?.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
-      const response = await fetch(`${cleanBaseUrl}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // We'll send both depending on backend requirements, usually one field or separate
-        body: JSON.stringify({ email: emailOrUsername, password }),
-      });
+    error,
+    showToast,
+    msg,
 
-      if (!response.ok) {
-        setError("Invalid credentials");
-      }else{
-      const data = await response.json();
-      localStorage.setItem("jwtToken",data.response.jwtToken);
-      setMsg(data.message);
-      setShowToast(true);
-      setUser({
-        id: data.response.id,
-        name: data.response.name,
-        email: data.response.email,
-        subscriptionPlan: data.response.subscriptionPlan,
-        profileImageUrl: data.profileImageUrl,
-      });
-      navigate("/dashboard");
-      }
-      // Handle success (e.g., redirect or save token)
-    } catch (err) {
-      setError(err.message || "An error occurred during login");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    handleEmailChange,
+    handlePasswordChange,
+    handleTogglePassword,
+    handleForgotPassword,
+    handleLogin,
+
+    handleCloseError,
+    handleCloseSuccess,
+  } = useLogin({
+    onNavigateToForgotPassword,
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-[var(--auth-bg-padding)] font-sans">
       <style>
         {`
           @keyframes slideInRight {
-            from { transform: translateX(50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+              transform: translateX(50px);
+              opacity: 0;
+            }
+
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
           }
-          .form-scroll::-webkit-scrollbar { width: 6px; }
-          .form-scroll::-webkit-scrollbar-track { background: transparent; }
-          .form-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+          .form-scroll::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .form-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          .form-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+          }
         `}
       </style>
 
       {/* Main Container */}
+
       <div className="w-full max-w-[1200px] flex flex-col-reverse md:flex-row rounded-[var(--auth-border-radius)] overflow-hidden shadow-2xl relative bg-white md:h-[90vh]">
-        {/* Left Side (Dark Section) - Image below on mobile */}
+        {/* Left Side */}
+
         <div className="w-full md:w-1/2 bg-[#282321] min-h-[200px] md:min-h-0 hidden sm:flex flex-col relative overflow-hidden flex-shrink-0">
           <div className="absolute inset-0 w-full h-full">
             <img
@@ -88,133 +85,134 @@ const Login = ({ onNavigateToSignUp, onNavigateToForgotPassword }) => {
           </div>
         </div>
 
-        {/* Right Side (White Section) - Now at the top on mobile */}
+        {/* Right Side */}
+
         <div
           className="w-full md:w-1/2 bg-white p-[var(--auth-form-padding)] overflow-y-auto form-scroll"
-          style={{ animation: "slideInRight 0.6s ease-out forwards" }}>
+          style={{
+            animation: "slideInRight 0.6s ease-out forwards",
+          }}>
           <div className="flex flex-col min-h-full justify-between gap-8">
             {/* Header */}
+
             <div className="flex justify-between items-center mb-8 md:mb-0">
-              {/* Logo */}
-              <div className="flex items-center  cursor-pointer">
-                {/* Gradient Circle Logo */}
+              <div className="flex items-center cursor-pointer">
                 <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-full border-[3px] sm:border-[3.5px] border-transparent shrink-0">
-                  <img
-                    src={icon_logo}
-                    className="h-full w-full justify-center "
-                  />
+                  <img src={icon_logo} alt="Logo" className="h-full w-full" />
                 </div>
+
                 <span className="text-xl sm:text-[1.35rem] font-bold tracking-tight text-gray-900">
                   firstimpression
                 </span>
               </div>
 
-              {/* Sign Up Link */}
-              <HashLink smooth to="/sign-up"
-                
-                className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
+              <HashLink
+                smooth
+                to="/sign-up"
+                className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
                 <User size={18} strokeWidth={1.5} />
                 Sign Up
               </HashLink>
             </div>
 
             {/* Login Form */}
+
             <div className="max-w-[420px] w-full mx-auto flex-grow flex flex-col justify-center py-8 md:py-0">
               <h2 className="text-3xl sm:text-[2.75rem] font-medium text-gray-900 mb-8 sm:mb-10 tracking-tight text-center md:text-left">
                 Sign In
               </h2>
 
               <form className="space-y-4 sm:space-y-5" onSubmit={handleLogin}>
-              
-                {/* Email / Username Input */}
+                {/* Email */}
+
                 <div>
                   <input
                     type="text"
                     placeholder="Email or Username"
                     value={emailOrUsername}
-                    onChange={(e) => setEmailOrUsername(e.target.value)}
+                    onChange={handleEmailChange}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
                     required
                   />
                 </div>
 
-                {/* Password Input */}
+                {/* Password */}
+
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-full border border-gray-300 focus:outline-none focus:border-theme-red focus:ring-1 focus:ring-theme-red transition-colors placeholder-gray-500 text-gray-900 text-sm sm:text-[15px]"
                     required
                   />
+
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                    onClick={handleTogglePassword}
+                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors">
                     {showPassword ? (
-                      <Eye
-                        size={20}
-                        strokeWidth={1.5}
-                        className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
-                      />
+                      <Eye size={20} strokeWidth={1.5} />
                     ) : (
-                      <EyeOff
-                        size={20}
-                        strokeWidth={1.5}
-                        className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px]"
-                      />
+                      <EyeOff size={20} strokeWidth={1.5} />
                     )}
                   </button>
                 </div>
 
                 {/* Forgot Password */}
+
                 <div className="pt-1">
                   <button
                     type="button"
-                    onClick={onNavigateToForgotPassword}
+                    onClick={handleForgotPassword}
                     className="text-theme-red-hover font-medium text-xs sm:text-[13px] hover:underline ml-4 sm:ml-6">
                     Forgot password?
                   </button>
                 </div>
 
-                {/* Sign In Button */}
+                {/* Login */}
+
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full mt-4 sm:mt-6 bg-gradient-to-r from-theme-red-start to-theme-red-end hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
+                  className={`w-full mt-4 sm:mt-6 bg-gradient-to-r from-theme-red-start to-theme-red-end hover:opacity-90 text-white font-medium text-sm sm:text-[15px] py-4 sm:py-[18px] px-6 rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-500/20 transform hover:-translate-y-[1px] ${
+                    isLoading ? "opacity-70 cursor-not-allowed" : ""
+                  }`}>
                   <LogIn size={18} strokeWidth={2} />
+
                   {isLoading ? "Signing In..." : "Sign In"}
                 </button>
 
+                {/* Success */}
+
                 {showToast && (
-                  <SuccessToast
-                    message={msg}
-                    onClose={() => setShowToast(false)}
-                  />
+                  <SuccessToast message={msg} onClose={handleCloseSuccess} />
                 )}
 
-                {/*  if errorMsg */}
+                {/* Error */}
+
                 {error && (
-                  <FailedToast
-                    message={error}
-                    onClose={() => setError("")}
-                  />
+                  <FailedToast message={error} onClose={handleCloseError} />
                 )}
               </form>
             </div>
 
             {/* Footer */}
+
             <div className="flex flex-col-reverse md:flex-row justify-between items-center text-[10px] sm:text-[11px] text-gray-400 font-medium gap-4 md:gap-0 mt-8 md:mt-0">
               <p>© 2005-2025 firstimpression Inc.</p>
+
               <div className="flex items-center gap-4 sm:gap-6">
                 <a
                   href="#"
-                  className="hover:text-gray-600 transition-colors cursor-pointer">
+                  className="hover:text-gray-500 transition-colors cursor-pointer">
                   Contact Us
                 </a>
-                <button className="flex items-center gap-1 hover:text-gray-600 transition-colors cursor-pointer">
-                  English <ChevronDown size={14} strokeWidth={2} />
+
+                <button className="flex items-center gap-1 hover:text-gray-500 transition-colors cursor-pointer">
+                  English
+                  <ChevronDown size={14} strokeWidth={2} />
                 </button>
               </div>
             </div>

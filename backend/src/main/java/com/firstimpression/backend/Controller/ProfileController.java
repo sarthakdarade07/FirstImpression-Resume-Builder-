@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import com.firstimpression.backend.dto.CertificationRequest;
 import com.firstimpression.backend.dto.EducationRequest;
 import com.firstimpression.backend.dto.LanguageRequest;
 import com.firstimpression.backend.dto.PersonalInformationRequest;
+import com.firstimpression.backend.dto.ProfileResponse;
 import com.firstimpression.backend.dto.ProjectRequest;
 import com.firstimpression.backend.dto.SkillRequest;
 import com.firstimpression.backend.dto.WorkExperienceRequest;
@@ -31,8 +33,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping(AppConstants.PROFILE_CONTROLLER)
 public class ProfileController {
-
+ 
 	private final ProfileService profileService;
+	
+	@GetMapping(AppConstants.GET_PROFILE)
+	public ResponseEntity<?> getProfile(Authentication authentication){
+		log.info("Inside AuthController - getProfile():{}",authentication);
+		//1.get user
+		Object principalObject =  authentication.getPrincipal();
+		
+		//2. Call the service Method
+		ProfileResponse currentProfile = profileService.getProfile(principalObject);
+		
+		//3. return response
+		return ResponseEntity.ok().body(Map.of("message",currentProfile));
+	}
 
 	@PostMapping(AppConstants.SAVE_PERSONAL_INFORMATION)
 	public ResponseEntity<?> savePersonalInformation(@RequestBody PersonalInformationRequest req,

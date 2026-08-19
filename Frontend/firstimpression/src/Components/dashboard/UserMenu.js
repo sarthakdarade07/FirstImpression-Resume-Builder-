@@ -39,12 +39,14 @@ const UserMenu = ({ isOpen, onClose}) => {
           {/* Header Profile Section */}
           <div className="p-4 border-b border-gray-100 bg-gray-50/50 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-theme-red-start to-theme-red-end flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white">
-                {user.name
-                  ? user.name
-                    ? user.name.charAt(0).toUpperCase()
-                    : "U"
-                  : "..."}
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-theme-red-start to-theme-red-end flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white overflow-hidden">
+                {user?.profileImageUrl ? (
+                  <img src={user.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : user?.name ? (
+                  user.name.charAt(0).toUpperCase()
+                ) : (
+                  "U"
+                )}
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-sm leading-tight">
@@ -73,8 +75,9 @@ const UserMenu = ({ isOpen, onClose}) => {
               },
               {
                 icon: Settings,
-                label: "Settings",
-                desc: "Preferences & billing",
+                label: "Account Settings",
+                desc: "Preferences & security",
+                action: () => { onClose(); navigate('/account'); }
               },
               {
                 icon: HelpCircle,
@@ -116,7 +119,7 @@ const UserMenu = ({ isOpen, onClose}) => {
 
           {/* Footer Action Area */}
           <div className="p-2 border-t border-gray-100 bg-gray-50/50 shrink-0">
-            <button className="flex items-center justify-center gap-2 w-full p-2.5 text-gray-600 hover:text-white hover:bg-[var(--theme-red)] rounded-xl transition-all text-sm font-semibold shadow-sm border border-transparent hover:shadow-md hover:shadow-[var(--theme-red)]/20 group">
+            <button className="flex items-center justify-center gap-2 w-full p-2.5 text-gray-500 hover:text-white hover:bg-[var(--theme-red)] rounded-xl transition-all text-sm font-semibold shadow-sm border border-transparent hover:shadow-md hover:shadow-[var(--theme-red)]/20 group">
               <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Sign Out
             </button>

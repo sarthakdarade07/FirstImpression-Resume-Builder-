@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, FileText, MoreVertical, LayoutTemplate, ShieldCheck, Sparkles, TrendingUp, Users, Clock, ArrowRight } from 'lucide-react';
+import { Plus, FileText, MoreVertical, LayoutTemplate, ShieldCheck, TrendingUp, Users, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import DashboardLayout from '../Components/dashboard/DashboardLayout';

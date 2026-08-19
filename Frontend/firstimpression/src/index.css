@@ -7,6 +7,31 @@
   --theme-red-end: #E92B65;
   --theme-red: #FF5A00;
   --theme-red-hover: #F15A2B;
+
+  /* Global Colors */
+  --bg-page: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F9FAFB;
+  --bg-input: #FFFFFF;
+  --bg-dark: #222222;
+
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --text-inverse: #FFFFFF;
+  --text-danger: #EF4444;
+
+  --border-subtle: #F3F4F6;
+  --border-default: #E5E7EB;
+
+  /* Uniform Padding */
+  --padding-component-x: 2.5rem;
+  --padding-component-y: 2.5rem;
+  --padding-input-x: 1rem;
+  --padding-input-y: 0.75rem;
+  --padding-btn-x: 1.5rem;
+  --padding-btn-y: 0.625rem;
+
   --auth-bg-padding: 0px;
   --auth-form-padding: 1.5rem; /* 24px */
   --auth-border-radius: 0;

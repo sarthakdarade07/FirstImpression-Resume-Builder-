@@ -42,7 +42,6 @@ public class SecurityConfig {
 				   "/api/auth/register",
 				   "/api/auth/login",
 				   "/api/auth/verify-email",
-				   "/api/auth/upload-image",
 				   "/api/auth/resend-verification",
 				   "/api/auth/forgot-password",
 				   "/api/auth/verify-otp",

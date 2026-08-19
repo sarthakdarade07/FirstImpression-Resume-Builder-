@@ -21,7 +21,7 @@ const CallToAction = () => {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-gradient-to-b from-[var(--theme-red)] to-transparent opacity-20 blur-2xl"></div>
 
           <div className="relative z-10 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white font-medium text-sm mb-8 border border-white/20 backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/10 text-white font-medium text-sm mb-8 border border-white/20 backdrop-blur-md">
               <CreditCard size={16} className="text-yellow-400" />
               <span>No credit card required</span>
             </div>

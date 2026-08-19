@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, User, Briefcase, GraduationCap, Wrench, Globe, Folder, Award, ChevronDown } from 'lucide-react';
 import DashboardLayout from '../Components/dashboard/DashboardLayout';
-import { useUser } from '../Contexts/UserContext';
+import { useProfileLogic } from '../Hooks/useProfileLogic';
 
 import ProfileBasicInfo from '../Components/profile/ProfileBasicInfo';
 import ProfileExperience from '../Components/profile/ProfileExperience';
@@ -14,48 +13,8 @@ import ProfileLanguages from '../Components/profile/ProfileLanguages';
 import ProfileCertifications from '../Components/profile/ProfileCertifications';
 
 const ProfilePage = () => {
-  const { user } = useUser();
-  const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-          setError('No authentication token found');
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(`${API_BASE_URL}/api/auth/get-profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile data');
-        }
-
-        const data = await response.json();
-        
-        // Extract from "message" wrapper if it exists
-        setProfileData(data.message || data);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [API_BASE_URL]);
+  const { profileData, loading, error, basicInfo, user } = useProfileLogic();
+  const [activeTab, setActiveTab] = useState('basicInfo');
 
   if (loading) {
     return (
@@ -79,46 +38,96 @@ const ProfilePage = () => {
     );
   }
 
-  // Combine auth user data with personal information if needed
-  const basicInfo = {
-    ...profileData?.authResponse,
-    ...profileData?.personalInformation,
-    // Prefer personalInformation name, fallback to user context, fallback to authResponse
-    name: profileData?.personalInformation?.name || user?.name || profileData?.authResponse?.name
-  };
+  const renderSidebarItem = (id, label, Icon) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={`w-full flex items-center gap-3 px-6 py-2.5.5 rounded-xl transition-all duration-200 text-[15px] font-medium ${
+        activeTab === id 
+          ? 'bg-white text-gray-900 shadow-sm border border-gray-200/50' 
+          : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'
+      }`}
+    >
+      <Icon size={18} className={activeTab === id ? 'text-[var(--theme-red)]' : 'text-gray-400'} />
+      {label}
+    </button>
+  );
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-8 pb-16 pt-4">
-        
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Your Profile</h1>
-          <p className="text-gray-500 mt-2 text-lg">Manage your personal information and resume details.</p>
-        </motion.div>
+      <div className="min-h-screen">
+        <div className="max-w-6xl mx-auto">
+          
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10"
+          >
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Profile Overview</h1>
+            <p className="text-slate-500 mt-2 text-lg font-medium">Manage your personal information and resume details.</p>
+          </motion.div>
 
-        {/* Profile Sections */}
-        <div className="space-y-8">
-          <ProfileBasicInfo data={basicInfo} />
-          
-          <ProfileExperience experience={profileData?.workExperiences} />
-          
-          <ProfileEducation education={profileData?.educations} />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <ProfileSkills skills={profileData?.skills} />
-            <ProfileLanguages languages={profileData?.languages} />
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+            
+            {/* Sidebar */}
+            <div className="w-full md:w-[260px] flex-shrink-0 space-y-8">
+              
+              {/* Profile Dropdown Simulation */}
+              <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-2xl shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--theme-red-start)] to-[var(--theme-red-end)] flex items-center justify-center text-white font-bold text-sm overflow-hidden shadow-sm">
+                    {user?.profileImageUrl ? (
+                      <img src={user.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={18} />
+                    )}
+                  </div>
+                  <span className="font-bold text-gray-900 text-[15px]">{user?.name || 'Guest User'}</span>
+                </div>
+                <ChevronDown size={18} className="text-gray-400" />
+              </div>
+
+              {/* Navigation Sections */}
+              <div>
+                <h4 className="px-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Resume Sections</h4>
+                <div className="space-y-1">
+                  {renderSidebarItem('basicInfo', 'Basic Info', User)}
+                  {renderSidebarItem('experience', 'Experience', Briefcase)}
+                  {renderSidebarItem('education', 'Education', GraduationCap)}
+                  {renderSidebarItem('skills', 'Skills', Wrench)}
+                  {renderSidebarItem('languages', 'Languages', Globe)}
+                  {renderSidebarItem('projects', 'Projects', Folder)}
+                  {renderSidebarItem('certifications', 'Certifications', Award)}
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-white rounded-[24px] border border-gray-200 shadow-[0_4px_20px_rgb(0,0,0,0.03)] overflow-hidden min-h-[500px]"
+                >
+                  <div className="px-10 py-10">
+                    {activeTab === 'basicInfo' && <ProfileBasicInfo data={basicInfo} />}
+                    {activeTab === 'experience' && <ProfileExperience experience={profileData?.workExperiences} />}
+                    {activeTab === 'education' && <ProfileEducation education={profileData?.educations} />}
+                    {activeTab === 'skills' && <ProfileSkills skills={profileData?.skills} />}
+                    {activeTab === 'languages' && <ProfileLanguages languages={profileData?.languages} />}
+                    {activeTab === 'projects' && <ProfileProjects projects={profileData?.projects} />}
+                    {activeTab === 'certifications' && <ProfileCertifications certifications={profileData?.certifications} />}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
           </div>
-          
-          <ProfileProjects projects={profileData?.projects} />
-          
-          <ProfileCertifications certifications={profileData?.certifications} />
         </div>
-
       </div>
     </DashboardLayout>
   );

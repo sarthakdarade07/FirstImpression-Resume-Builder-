@@ -2,11 +2,8 @@ package com.firstimpression.backend.Services;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,25 +15,14 @@ import org.springframework.stereotype.Service;
 import com.firstimpression.backend.Exception.ResourceExistsException;
 import com.firstimpression.backend.Repository.UsersRepository;
 import com.firstimpression.backend.dto.AuthResponse;
-import com.firstimpression.backend.dto.CertificationResponse;
-import com.firstimpression.backend.dto.EducationResponse;
-import com.firstimpression.backend.dto.LanguageResponse;
+
 import com.firstimpression.backend.dto.LoginRequest;
 import com.firstimpression.backend.dto.OtpVerificationResponse;
-import com.firstimpression.backend.dto.PersonalInformationResponse;
-import com.firstimpression.backend.dto.ProfileResponse;
-import com.firstimpression.backend.dto.ProjectResponse;
+
 import com.firstimpression.backend.dto.RegisterRequest;
-import com.firstimpression.backend.dto.SkillResponse;
-import com.firstimpression.backend.dto.WorkExperienceResponse;
-import com.firstimpression.backend.model.Certification;
-import com.firstimpression.backend.model.Education;
-import com.firstimpression.backend.model.Language;
-import com.firstimpression.backend.model.PersonalInformation;
-import com.firstimpression.backend.model.Project;
-import com.firstimpression.backend.model.Skill;
+
 import com.firstimpression.backend.model.Users;
-import com.firstimpression.backend.model.WorkExperience;
+
 import com.firstimpression.backend.util.JwtUtil;
 
 import jakarta.mail.MessagingException;
@@ -193,30 +179,10 @@ public class AuthService {
 		sendVerificationEmail(user);
 
 	}
-	
-	public AuthResponse getAccountDetails(Users user) { 
 
-	    return toResponse(user); 
-	}
+	public AuthResponse getAccountDetails(Users user) {
 
-	public ProfileResponse getProfile(Object principalObj) {
-		log.info("Inside AuthResponse- getProfile():{}", principalObj);
-
-		Users principal = (Users) principalObj; 
-		Users user = usersRepository.findById(principal.getId())
-				.orElseThrow(() -> new RuntimeException("User not found"));
-		
-		return ProfileResponse.builder()
-				
-	            .personalInformation(toPersonalInformationResponse(user.getPersonalInformation()))
-	            .educations(toEducationResponseList(user.getEducation()))
-	            .workExperiences(toWorkExperienceResponseList(user.getWorkExperience()))
-	            .projects(toProjectResponseList(user.getProjects()))
-	            .skills(toSkillResponseList(user.getSkills()))
-	            .certifications(toCertificationResponseList(user.getCertifications()))
-	            .languages(toLanguageResponseList(user.getLanguages()))
-	            .build();
-
+		return toResponse(user);
 	}
 
 	public void forgotPassword(String email) throws IOException, MessagingException {
@@ -291,111 +257,6 @@ public class AuthService {
 		user.setPassword(passwordEncoder.encode(newPassword));
 		usersRepository.save(user);
 
-	} 
-
-	private PersonalInformationResponse toPersonalInformationResponse(PersonalInformation personalInformation) {
-
-	    if (personalInformation == null) {
-	        return null;
-	    }
-
-	    return PersonalInformationResponse.builder()
-	            .name(personalInformation.getName())
-	            .location(personalInformation.getLocation())
-	            .role(personalInformation.getRole())
-	            .email(personalInformation.getEmail())
-	            .linkedinUrl(personalInformation.getLinkedinUrl())
-	            .githubUrl(personalInformation.getGithubUrl())
-	            .portfolioUrl(personalInformation.getPortfolioUrl())
-	            .phoneNo(personalInformation.getPhoneNo())
-	            .photoUrl(personalInformation.getPhotoUrl())
-	            .build();
-	}
-	 
-	private List<EducationResponse> toEducationResponseList(List<Education> educations) {
-
-	    return educations.stream()
-	            .map(e -> EducationResponse.builder()
-	                    .id(e.getId())
-	                    .educationType(e.getEducationType().getTitle())
-	                    .instituteName(e.getInstituteName())
-	                    .scoreType(e.getScoreType().getTitle())
-	                    .score(e.getScore())
-	                    .startYear(e.getStartYear())
-	                    .endYear(e.getEndYear())
-	                    .boardOrUniversity(e.getBoardOrUniversity())
-	                    .specialization(e.getSpecialization())
-	                    .build())
-	            .toList();
-	}
-	
-	
-	private List<WorkExperienceResponse> toWorkExperienceResponseList(List<WorkExperience> workExperiences) {
-
-	    return workExperiences.stream()
-	            .map(w -> WorkExperienceResponse.builder()
-	                    .id(w.getId())
-	                    .companyName(w.getCompanyName())
-	                    .jobTitle(w.getJobTitle())
-	                    .location(w.getLocation())
-	                    .joinDate(w.getJoinDate())
-	                    .endDate(w.getEndDate())
-	                    .description(w.getDescription())
-	                    .technologies(w.getTechnologies())
-	                    .build())
-	            .toList();
-	}
-	
-	private List<ProjectResponse> toProjectResponseList(List<Project> projects) {
-
-	    return projects.stream()
-	            .map(p -> ProjectResponse.builder()
-	                    .id(p.getId())
-	                    .title(p.getTitle())
-	                    .description(p.getDescription())
-	                    .technologies(p.getTechnologies())
-	                    .projectLink(p.getProjectLink())
-	                    .startDate(p.getStartDate())
-	                    .endDate(p.getEndDate())
-	                    .build())
-	            .toList();
-	}
-	
-	
-	private List<SkillResponse> toSkillResponseList(List<Skill> skills) {
-
-	    return skills.stream()
-	            .map(s -> SkillResponse.builder()
-	                    .id(s.getId())
-	                    .title(s.getTitle())
-	                    .level(s.getLevel())
-	                    .build())
-	            .toList();
-	}
-	
-	private List<CertificationResponse> toCertificationResponseList(List<Certification> certifications) {
-
-	    return certifications.stream()
-	            .map(c -> CertificationResponse.builder()
-	                    .id(c.getId())
-	                    .title(c.getTitle())
-	                    .issuedBy(c.getIssuedBy())
-	                    .issueDate(c.getIssueDate())
-	                    .expiryDate(c.getExpiryDate())
-	                    .url(c.getUrl())
-	                    .build())
-	            .toList();
-	}
-	
-	private List<LanguageResponse> toLanguageResponseList(List<Language> languages) {
-
-	    return languages.stream()
-	            .map(l -> LanguageResponse.builder()
-	                    .id(l.getId())
-	                    .language(l.getLanguage())
-	                    .level(l.getLevel())
-	                    .build())
-	            .toList();
 	}
 
 }

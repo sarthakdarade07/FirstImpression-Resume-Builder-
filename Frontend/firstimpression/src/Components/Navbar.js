@@ -16,54 +16,56 @@ const Navbar = ({ isSplashFinished = true }) => {
   }, []);
 
   return (
-    <motion.nav 
-      initial={false}
-      animate={isSplashFinished ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-      transition={{ duration: 0.8, delay: isSplashFinished ? 0.3 : 0, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
-        isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 h-24 flex items-center justify-between">
-        
-        {/* Left Logo Area - Left empty because SplashScreen.js lands exactly here! */}
-        <div className="w-[200px]"></div>
+    <div className="h-24 w-full shrink-0">
+      <motion.nav 
+        initial={false}
+        animate={isSplashFinished ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+        transition={{ duration: 0.8, delay: isSplashFinished ? 0.3 : 0, ease: "easeOut" }}
+        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
+          isScrolled ? "bg-[var(--bg-surface)]/90 backdrop-blur-md shadow-sm border-b border-[var(--border-subtle)]" : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 h-24 flex items-center justify-between">
+          
+          {/* Left Logo Area - Left empty because SplashScreen.js lands exactly here! */}
+          <div className="w-[200px]"></div>
 
-        {/* Middle Links */}
-        <div className="hidden md:flex items-center gap-10 font-medium text-[15px] text-gray-700">
-          <HashLink smooth to="/templates" className="hover:text-[var(--theme-red-hover)] transition-colors">
-            Templates
-          </HashLink>
-          <HashLink to="/features" className="hover:text-[var(--theme-red-hover)] transition-colors">
-            Features
-          </HashLink>
-          <HashLink to="/pricing" className="hover:text-[var(--theme-red-hover)] transition-colors">
-            Examples
-          </HashLink>
-          <HashLink href="/about-us" className="hover:text-[var(--theme-red-hover)] transition-colors">
-            About us
-          </HashLink>
-        </div>
+          {/* Middle Links */}
+          <div className="hidden md:flex items-center gap-10 font-medium text-[15px] text-[var(--text-secondary)]">
+            <HashLink smooth to="/templates" className="hover:text-[var(--theme-red-hover)] transition-colors">
+              Templates
+            </HashLink>
+            <HashLink to="/features" className="hover:text-[var(--theme-red-hover)] transition-colors">
+              Features
+            </HashLink>
+            <HashLink to="/pricing" className="hover:text-[var(--theme-red-hover)] transition-colors">
+              Examples
+            </HashLink>
+            <HashLink href="/about-us" className="hover:text-[var(--theme-red-hover)] transition-colors">
+              About us
+            </HashLink>
+          </div>
 
-        {/* Right Button */}
-        <div className="flex items-center gap-4">
-          <HashLink smooth to="/sign-in" className="hidden sm:block text-gray-700 font-medium hover:text-[var(--theme-red-hover)] transition-colors">
-            Sign in
-          </HashLink>
-          <HashLink smooth to="/sign-up"
-            className={`
-            h-11 px-6 rounded-full font-semibold flex items-center justify-center shrink-0 transition-all duration-300
-            ${
-              isScrolled
-                ? "bg-gradient-to-r from-[var(--theme-red-start)] to-[var(--theme-red-end)] text-white hover:shadow-md hover:-translate-y-0.5"
-                : "bg-gray-900 text-white hover:bg-gray-800 hover:-translate-y-0.5"
-            }
-          `}>
-            Get Started
-          </HashLink>
+          {/* Right Button */}
+          <div className="flex items-center gap-4">
+            <HashLink smooth to="/sign-in" className="hidden sm:block text-[var(--text-secondary)] font-medium hover:text-[var(--theme-red-hover)] transition-colors">
+              Sign in
+            </HashLink>
+            <HashLink smooth to="/sign-up"
+              className={`
+              h-11 px-6 rounded-full font-semibold flex items-center justify-center shrink-0 transition-all duration-300
+              ${
+                isScrolled
+                  ? "bg-gradient-to-r from-[var(--theme-red-start)] to-[var(--theme-red-end)] text-[var(--text-inverse)] hover:shadow-md hover:-translate-y-0.5"
+                  : "bg-gray-900 text-[var(--text-inverse)] hover:bg-gray-800 hover:-translate-y-0.5"
+              }
+            `}>
+              Get Started
+            </HashLink>
+          </div>
         </div>
-      </div>
-    </motion.nav>
+      </motion.nav>
+    </div>
   );
 };
 

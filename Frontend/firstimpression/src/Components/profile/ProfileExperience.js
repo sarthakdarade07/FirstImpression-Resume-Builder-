@@ -1,85 +1,132 @@
 import React from 'react';
-import { Briefcase, Calendar, MapPin, Code2 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ProfileExperience = ({ experience }) => {
-  if (!experience || experience.length === 0) return null;
+  if (!experience || experience.length === 0) {
+    return (
+      <div>
+        <h2 className="text-[1.7rem] font-bold text-gray-900 mb-8 tracking-tight">Experience</h2>
+        <p className="text-gray-500">No experience added yet.</p>
+        <button className="mt-4 px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add Experience
+        </button>
+      </div>
+    );
+  }
 
-  const formatDate = (dateString) => {
+  const formatDateForInput = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch(e) {
+      return '';
+    }
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)]"
-    >
-      <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
-        <div className="p-2.5 bg-[var(--theme-red-start)]/10 rounded-xl border border-[var(--theme-red-start)]/20">
-          <Briefcase className="w-6 h-6 text-theme-red" />
-        </div>
-        <h3 className="text-2xl font-black text-gray-900 tracking-tight">Experience</h3>
+    <div>
+      <div className="flex items-center justify-between mb-8 max-w-3xl">
+        <h2 className="text-[1.7rem] font-bold text-gray-900 tracking-tight">Experience</h2>
+        <button className="px-5 py-2 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add New
+        </button>
       </div>
       
-      <div className="space-y-8">
+      <div className="space-y-10 max-w-3xl">
         {experience.map((exp, index) => (
-          <div key={exp.id || index} className="relative pl-8 md:pl-0">
-            {/* Timeline Line for Mobile */}
-            <div className="md:hidden absolute left-[15px] top-6 bottom-[-24px] w-[2px] bg-dashed border-l-2 border-dashed border-gray-200 last:border-0"></div>
-            
-            <div className="flex flex-col md:flex-row gap-4 md:gap-8 group">
-              {/* Date Column */}
-              <div className="md:w-48 shrink-0 md:text-right relative pt-1">
-                {/* Timeline Dot for Mobile */}
-                <div className="md:hidden absolute -left-[29px] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-[var(--theme-red-start)] shadow-sm group-hover:bg-[var(--theme-red-start)] transition-colors"></div>
-                
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-theme-red bg-[var(--theme-red-start)]/10 px-3 py-1.5 rounded-lg border border-[var(--theme-red-start)]/20 uppercase tracking-wider">
-                  <Calendar className="w-3.5 h-3.5" />
-                  {formatDate(exp.joinDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Present'}
-                </span>
-                
-                {exp.location && (
-                  <div className="mt-2 text-xs font-medium text-gray-400 flex items-center md:justify-end gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {exp.location}
-                  </div>
-                )}
+          <div key={exp.id || index} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">Position #{index + 1}</h3>
+              <button className="text-red-500 hover:text-red-700 text-sm font-semibold transition-colors">Remove</button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Job Title</label>
+                <input 
+                  type="text" 
+                  defaultValue={exp.jobTitle || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
               </div>
-              
-              {/* Content Column */}
-              <div className="flex-1 pb-8 md:pb-10 border-b border-gray-100 last:border-0 last:pb-0 relative">
-                {/* Desktop timeline elements if you want a center line, but right now it's side-by-side */}
-                
-                <div className="bg-white group-hover:bg-[var(--theme-red-start)]/5 p-5 rounded-2xl border border-transparent group-hover:border-[var(--theme-red-start)]/20 transition-all duration-300">
-                  <h4 className="text-xl font-bold text-gray-900 group-hover:text-[var(--theme-red-start)] transition-colors">
-                    {exp.jobTitle}
-                  </h4>
-                  <p className="text-gray-500 font-semibold mb-3">{exp.companyName}</p>
-                  
-                  {exp.description && (
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4 whitespace-pre-wrap">{exp.description}</p>
-                  )}
-                  
-                  {exp.technologies && exp.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {exp.technologies.map((tech, i) => (
-                        <span key={i} className="inline-flex items-center gap-1 text-[11px] font-bold text-theme-red bg-[var(--theme-red-start)]/10 px-2.5 py-1 rounded-md border border-[var(--theme-red-start)]/20">
-                          <Code2 className="w-3 h-3 text-theme-red" />
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Company Name</label>
+                <input 
+                  type="text" 
+                  defaultValue={exp.companyName || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
               </div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Start Date</label>
+                <input 
+                  type="date" 
+                  defaultValue={formatDateForInput(exp.joinDate)}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">End Date</label>
+                <input 
+                  type="date" 
+                  defaultValue={formatDateForInput(exp.endDate)}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Location</label>
+                <input 
+                  type="text" 
+                  defaultValue={exp.location || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Technologies</label>
+                <input 
+                  type="text" 
+                  defaultValue={exp.technologies ? exp.technologies.join(', ') : ''}
+                  readOnly
+                  placeholder="React, Node.js, etc."
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Description</label>
+              <textarea 
+                defaultValue={exp.description || ''}
+                readOnly
+                rows={4}
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium resize-none"
+              />
+            </div>
+            
+            {index < experience.length - 1 && (
+              <hr className="border-gray-100 mt-10" />
+            )}
           </div>
         ))}
+
+        <div className="pt-6 border-t border-gray-100">
+          <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+            Save changes
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

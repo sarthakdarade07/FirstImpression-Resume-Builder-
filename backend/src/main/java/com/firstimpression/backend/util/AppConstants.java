@@ -11,12 +11,12 @@ public class AppConstants {
 	public static final String UPLOAD_IMAGE = "/upload-image";
 	public static final String LOGIN = "/login";
 	public static final String VALIDATE_TKN = "/validate";	
-	public static final String RESEND_VERIFICATION = "/resend-verification";	
-	public static final String GET_PROFILE = "/get-profile";	
+	public static final String RESEND_VERIFICATION = "/resend-verification";		
 	public static final String FORGOT_PASSWORD = "/forgot-password";	
 	public static final String VERIFY_OTP = "/verify-otp";	
 	public static final String RESET_PASSWORD = "/reset-password";	
 	public static final String GET_ACCOUNT_DETAILS = "/me";
+	public static final String REMOVE_IMAGE = "/remove-image";
 	//Profile
 	
 	public static final String PROFILE_CONTROLLER = "api/profile";	
@@ -27,6 +27,7 @@ public class AppConstants {
 	public static final String SAVE_PROJECTS = "/save-projects";
 	public static final String SAVE_SKILLS = "/save-skills";
 	public static final String SAVE_WORK_EXPERIENCE = "/save-work-experience";
+	public static final String GET_PROFILE = "/get-profile";
 	
 
 

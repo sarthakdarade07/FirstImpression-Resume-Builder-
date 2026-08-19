@@ -33,7 +33,7 @@ export default function Hero({ isSplashFinished = true }) {
             transition={{ duration: 1, delay: isSplashFinished ? 0.4 : 0, type: "spring", stiffness: 60, damping: 15 }}
             className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left pt-10 lg:pt-0"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 border border-red-100 text-[var(--theme-red-hover)] font-medium text-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-red-100 text-[var(--theme-red-hover)] font-medium text-sm mb-6">
               <Sparkles size={16} />
               <span>The #1 AI Resume Builder</span>
             </div>
@@ -42,7 +42,7 @@ export default function Hero({ isSplashFinished = true }) {
               Craft your perfect resume and make a lasting <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--theme-red-start)] to-[var(--theme-red-end)]">first impression</span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl leading-relaxed">
               Your career journey starts here. Build professional, beautifully designed, and recruiter-approved resumes in just minutes. Stand out from the crowd and land your dream job.
             </p>
             
@@ -64,7 +64,7 @@ export default function Hero({ isSplashFinished = true }) {
                   <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
                     {feature.icon}
                   </div>
-                  <span className="font-medium text-gray-700">{feature.text}</span>
+                  <span className="font-medium text-gray-500">{feature.text}</span>
                 </div>
               ))}
             </div>

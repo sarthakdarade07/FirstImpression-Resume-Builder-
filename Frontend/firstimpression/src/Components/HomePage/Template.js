@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, LayoutTemplate, Briefcase, ChevronRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { FileText, LayoutTemplate, Briefcase, ChevronRight, CheckCircle2 } from 'lucide-react';
 import Resume1 from '../../Assets/images/reume/reume-1.webp';
 import Resume2 from '../../Assets/images/reume/reume-2.webp';
 import Resume3 from '../../Assets/images/reume/reume-3.webp';
@@ -42,21 +42,21 @@ const Template = () => {
               You're not getting rejected because you lack talent.
             </motion.h2>
             
-            <motion.p variants={itemVariants} className="text-xl text-gray-600 leading-relaxed">
+            <motion.p variants={itemVariants} className="text-xl text-gray-500 leading-relaxed">
               You're getting overlooked because your resume isn't showcasing your true potential. 
               Our expertly designed layouts ensure your achievements get noticed by recruiters.
             </motion.p>
             
             <motion.div variants={itemVariants} className="pt-4 flex flex-col space-y-4">
-              <div className="flex items-center text-gray-700 font-medium">
+              <div className="flex items-center text-gray-500 font-medium">
                 <CheckCircle2 className="w-6 h-6 text-green-500 mr-3" />
                 <span>Professionally designed structures</span>
               </div>
-              <div className="flex items-center text-gray-700 font-medium">
+              <div className="flex items-center text-gray-500 font-medium">
                 <CheckCircle2 className="w-6 h-6 text-green-500 mr-3" />
                 <span>ATS-optimized formatting</span>
               </div>
-              <div className="flex items-center text-gray-700 font-medium">
+              <div className="flex items-center text-gray-500 font-medium">
                 <CheckCircle2 className="w-6 h-6 text-green-500 mr-3" />
                 <span>Industry-specific layouts</span>
               </div>
@@ -66,7 +66,7 @@ const Template = () => {
               <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 Explore professional templates for resume
               </h3>
-              <p className="text-gray-600 mb-8">
+              <p className="text-gray-500 mb-8">
                 Choose from dozens of expertly crafted templates designed to help you land your dream job faster.
               </p>
             </motion.div>

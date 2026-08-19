@@ -125,7 +125,7 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 
               {/* Back to Login Link */}
               <HashLink smooth to="/sign-in"
-                className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
+                className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-[#FF5A00] font-medium transition-colors text-xs sm:text-sm">
                 <LogIn size={18} strokeWidth={1.5} />
                 Sign In
               </HashLink>
@@ -277,10 +277,10 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
               <div className="flex items-center gap-4 sm:gap-6">
                 <a
                   href="#"
-                  className="hover:text-gray-600 transition-colors cursor-pointer">
+                  className="hover:text-gray-500 transition-colors cursor-pointer">
                   Terms of Service
                 </a>
-                <button className="flex items-center gap-1 hover:text-gray-600 transition-colors cursor-pointer">
+                <button className="flex items-center gap-1 hover:text-gray-500 transition-colors cursor-pointer">
                   English <ChevronDown size={14} strokeWidth={2} />
                 </button>
               </div>

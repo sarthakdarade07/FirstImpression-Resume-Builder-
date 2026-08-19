@@ -98,7 +98,7 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
 
               <button
                 onClick={onBackToLogin}
-                className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-theme-red font-medium transition-colors text-xs sm:text-sm">
+                className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-theme-red font-medium transition-colors text-xs sm:text-sm">
                 <ArrowLeft size={18} strokeWidth={1.5} />
                 Back to Login
               </button>
@@ -126,7 +126,7 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors">
                     {showPassword ? <Eye size={20} strokeWidth={1.5} /> : <EyeOff size={20} strokeWidth={1.5} />}
                   </button>
                 </div>
@@ -143,7 +143,7 @@ const ChangePassword = ({ email, resetToken, onBackToLogin }) => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                    className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors">
                     {showConfirmPassword ? <Eye size={20} strokeWidth={1.5} /> : <EyeOff size={20} strokeWidth={1.5} />}
                   </button>
                 </div>

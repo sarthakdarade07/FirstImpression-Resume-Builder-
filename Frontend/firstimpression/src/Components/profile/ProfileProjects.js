@@ -1,63 +1,122 @@
 import React from 'react';
-import { FolderGit2, Calendar, Link as LinkIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ProfileProjects = ({ projects }) => {
-  if (!projects || projects.length === 0) return null;
+  if (!projects || projects.length === 0) {
+    return (
+      <div>
+        <h2 className="text-[1.7rem] font-bold text-gray-900 mb-8 tracking-tight">Projects</h2>
+        <p className="text-gray-500">No projects added yet.</p>
+        <button className="mt-4 px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add Project
+        </button>
+      </div>
+    );
+  }
 
-  const formatDate = (dateString) => {
+  const formatDateForInput = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch(e) {
+      return '';
+    }
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)]"
-    >
-      <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-        <div className="p-2.5 bg-[var(--theme-red-start)]/10 rounded-xl border border-[var(--theme-red-start)]/20">
-          <FolderGit2 className="w-6 h-6 text-theme-red" />
-        </div>
-        <h3 className="text-2xl font-black text-gray-900 tracking-tight">Projects</h3>
+    <div>
+      <div className="flex items-center justify-between mb-8 max-w-3xl">
+        <h2 className="text-[1.7rem] font-bold text-gray-900 tracking-tight">Projects</h2>
+        <button className="px-5 py-2 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add New
+        </button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-10 max-w-3xl">
         {projects.map((project, index) => (
-          <div key={project.id || index} className="group flex flex-col p-6 rounded-[1.5rem] border border-gray-200 bg-white hover:shadow-xl hover:shadow-theme-red/5 hover:border-[var(--theme-red-start)]/30 transition-all duration-300">
-            <div className="flex justify-between items-start mb-3">
-              <h4 className="text-xl font-bold text-gray-900 group-hover:text-theme-red transition-colors line-clamp-1">{project.title}</h4>
-              {project.projectLink && (
-                <a href={project.projectLink} target="_blank" rel="noreferrer" className="p-1.5 text-gray-400 hover:text-theme-red hover:bg-[var(--theme-red-start)]/10 rounded-lg transition-colors shrink-0 border border-transparent hover:border-[var(--theme-red-start)]/20">
-                  <LinkIcon className="w-4 h-4" />
-                </a>
-              )}
+          <div key={project.id || index} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">Project #{index + 1}</h3>
+              <button className="text-red-500 hover:text-red-700 text-sm font-semibold transition-colors">Remove</button>
             </div>
-            
-            <div className="flex items-center gap-1.5 text-[11px] font-bold text-theme-red uppercase tracking-wider mb-4 bg-[var(--theme-red-start)]/10 w-fit px-2 py-1 rounded-md border border-[var(--theme-red-start)]/20">
-              <Calendar className="w-3.5 h-3.5" />
-              {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : 'Present'}
-            </div>
-            
-            {project.description && (
-              <p className="text-sm text-gray-600 line-clamp-3 mb-6 flex-1 leading-relaxed">{project.description}</p>
-            )}
-            
-            {project.technologies && project.technologies.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-auto pt-5 border-t border-gray-100">
-                {project.technologies.map((tech, i) => (
-                  <span key={i} className="text-[11px] font-bold text-gray-600 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200 group-hover:border-theme-red/20 transition-colors">
-                    {tech}
-                  </span>
-                ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Project Title</label>
+                <input 
+                  type="text" 
+                  defaultValue={project.title || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
               </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Project Link</label>
+                <input 
+                  type="url" 
+                  defaultValue={project.projectLink || ''}
+                  readOnly
+                  placeholder="https://github.com/..."
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Start Date</label>
+                <input 
+                  type="date" 
+                  defaultValue={formatDateForInput(project.startDate)}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">End Date</label>
+                <input 
+                  type="date" 
+                  defaultValue={formatDateForInput(project.endDate)}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Technologies</label>
+              <input 
+                type="text" 
+                defaultValue={project.technologies ? project.technologies.join(', ') : ''}
+                readOnly
+                placeholder="React, Node.js, etc."
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Description</label>
+              <textarea 
+                defaultValue={project.description || ''}
+                readOnly
+                rows={4}
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium resize-none"
+              />
+            </div>
+            
+            {index < projects.length - 1 && (
+              <hr className="border-gray-100 mt-10" />
             )}
           </div>
         ))}
+
+        <div className="pt-6 border-t border-gray-100">
+          <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+            Save changes
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

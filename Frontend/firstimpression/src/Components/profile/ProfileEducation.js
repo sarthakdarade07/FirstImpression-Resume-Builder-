@@ -1,64 +1,138 @@
 import React from 'react';
-import { GraduationCap, Calendar, Award } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ProfileEducation = ({ education }) => {
-  if (!education || education.length === 0) return null;
+  if (!education || education.length === 0) {
+    return (
+      <div>
+        <h2 className="text-[1.7rem] font-bold text-gray-900 mb-8 tracking-tight">Education</h2>
+        <p className="text-gray-500">No education added yet.</p>
+        <button className="mt-4 px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add Education
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)]"
-    >
-      <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
-        <div className="p-2.5 bg-[var(--theme-red-start)]/10 rounded-xl border border-[var(--theme-red-start)]/20">
-          <GraduationCap className="w-6 h-6 text-theme-red" />
-        </div>
-        <h3 className="text-2xl font-black text-gray-900 tracking-tight">Education</h3>
+    <div>
+      <div className="flex items-center justify-between mb-8 max-w-3xl">
+        <h2 className="text-[1.7rem] font-bold text-gray-900 tracking-tight">Education</h2>
+        <button className="px-5 py-2 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+          Add New
+        </button>
       </div>
       
-      <div className="space-y-8">
+      <div className="space-y-10 max-w-3xl">
         {education.map((edu, index) => (
-          <div key={edu.id || index} className="relative pl-8 md:pl-0">
-            {/* Timeline Line for Mobile */}
-            <div className="md:hidden absolute left-[15px] top-6 bottom-[-24px] w-[2px] bg-dashed border-l-2 border-dashed border-gray-200 last:border-0"></div>
-            
-            <div className="flex flex-col md:flex-row gap-4 md:gap-8 group">
-              {/* Date Column */}
-              <div className="md:w-48 shrink-0 md:text-right relative pt-1">
-                {/* Timeline Dot for Mobile */}
-                <div className="md:hidden absolute -left-[29px] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-[var(--theme-red-start)] shadow-sm group-hover:bg-[var(--theme-red-start)] transition-colors"></div>
-                
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-theme-red bg-[var(--theme-red-start)]/10 px-3 py-1.5 rounded-lg border border-[var(--theme-red-start)]/20 uppercase tracking-wider">
-                  <Calendar className="w-3.5 h-3.5" />
-                  {edu.startYear} - {edu.endYear || 'Present'}
-                </span>
+          <div key={edu.id || index} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">Education #{index + 1}</h3>
+              <button className="text-red-500 hover:text-red-700 text-sm font-semibold transition-colors">Remove</button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Education Type</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.educationType || ''}
+                  readOnly
+                  placeholder="e.g. Bachelor's Degree"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
               </div>
-              
-              {/* Content Column */}
-              <div className="flex-1 pb-8 md:pb-10 border-b border-gray-100 last:border-0 last:pb-0">
-                <div className="bg-white group-hover:bg-[var(--theme-red-start)]/5 p-5 rounded-2xl border border-transparent group-hover:border-[var(--theme-red-start)]/20 transition-all duration-300">
-                  <h4 className="text-xl font-bold text-gray-900 group-hover:text-[var(--theme-red-start)] transition-colors">
-                    {edu.educationType} {edu.specialization && <span className="text-gray-400 font-medium ml-1">in {edu.specialization}</span>}
-                  </h4>
-                  <p className="text-gray-500 font-semibold mt-1">{edu.instituteName}</p>
-                  {edu.boardOrUniversity && (
-                    <p className="text-gray-400 text-xs mt-1.5 uppercase tracking-wide font-bold">{edu.boardOrUniversity}</p>
-                  )}
-                  {edu.score && (
-                    <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100/50">
-                      <Award className="w-4 h-4" />
-                      {edu.scoreType}: {edu.score}
-                    </div>
-                  )}
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Specialization</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.specialization || ''}
+                  readOnly
+                  placeholder="e.g. Computer Science"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
               </div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Institute Name</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.instituteName || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Board / University</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.boardOrUniversity || ''}
+                  readOnly
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Start Year</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.startYear || ''}
+                  readOnly
+                  placeholder="YYYY"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">End Year</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.endYear || ''}
+                  readOnly
+                  placeholder="YYYY or Present"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Score Type</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.scoreType || ''}
+                  readOnly
+                  placeholder="e.g. CGPA, Percentage"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Score</label>
+                <input 
+                  type="text" 
+                  defaultValue={edu.score || ''}
+                  readOnly
+                  placeholder="e.g. 9.5 or 95%"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--theme-red-start)] transition-all font-medium"
+                />
+              </div>
+            </div>
+            
+            {index < education.length - 1 && (
+              <hr className="border-gray-100 mt-10" />
+            )}
           </div>
         ))}
+
+        <div className="pt-6 border-t border-gray-100">
+          <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 text-sm font-bold rounded-full hover:bg-gray-50 transition-colors shadow-sm">
+            Save changes
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

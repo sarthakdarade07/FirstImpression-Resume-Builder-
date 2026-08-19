@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.net.URI;
 
-
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -69,13 +69,21 @@ public class AuthController {
 	}
 	
 	@PostMapping(AppConstants.UPLOAD_IMAGE)
-	public ResponseEntity<?> uploadImage(@Valid @RequestPart("image")MultipartFile file) throws IOException{
+	public ResponseEntity<?> uploadImage(@Valid @RequestPart("image")MultipartFile file ,Authentication authentication) throws IOException{
 		log.info("Inside AuthController- uplaodImage():{}",file);
-
-		Map<String,String> response =fileUploadService.uploadImage(file);
+         Users user = (Users)authentication.getPrincipal();
+		Map<String,String> response =fileUploadService.uploadImage(file,user);
 		
 		return ResponseEntity.ok(response);
 		
+	} 
+	
+	@PostMapping(AppConstants.REMOVE_IMAGE)
+	public ResponseEntity<?> removeImage(Authentication authentication) throws IOException{
+		Users user = (Users) authentication.getPrincipal();
+		fileUploadService.removeImage(user);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("message","Profile image removed."));
 	}
 	
 	@PostMapping(AppConstants.LOGIN)
@@ -124,18 +132,7 @@ public class AuthController {
 	    return ResponseEntity.ok(authService.getAccountDetails(user));
 	}
 	
-	@GetMapping(AppConstants.GET_PROFILE)
-	public ResponseEntity<?> getProfile(Authentication authentication){
-		log.info("Inside AuthController - getProfile():{}",authentication);
-		//1.get user
-		Object principalObject =  authentication.getPrincipal();
-		
-		//2. Call the service Method
-		ProfileResponse currentProfile = authService.getProfile(principalObject);
-		
-		//3. return response
-		return ResponseEntity.ok().body(Map.of("message",currentProfile));
-	}
+
 	 
 
 	@PostMapping(AppConstants.FORGOT_PASSWORD)

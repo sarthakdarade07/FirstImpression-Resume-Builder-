@@ -90,6 +90,9 @@ public class Users {
     
     private String otp=null;
     private LocalDateTime otpExpires;
+    
+    
+    
     private String resetToken;
     private LocalDateTime resetTokenExpires;
     
